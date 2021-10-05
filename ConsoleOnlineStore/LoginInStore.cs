@@ -6,7 +6,7 @@ namespace ConsoleOnlineStore
     public class LoginInStore : LoginData
     {
         public delegate void LoginHandling(string message);
-
+        
         public event LoginHandling Notify;
         
         public void Join()
@@ -24,6 +24,7 @@ namespace ConsoleOnlineStore
             }
             else
             {
+                Console.Clear();
                 Notify?.Invoke("Вы неверно указали логин или пароль. Попробуйте ещё раз");
                 Join();
             }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace ConsoleOnlineStore
 {
@@ -10,11 +9,10 @@ namespace ConsoleOnlineStore
     {
         public static void AddNewUser(Registration registration)
         {
-            string path = Path.Combine(Environment.CurrentDirectory, "Login&Password.json");
+           string path = Path.Combine(Environment.CurrentDirectory, "Login&Password.json");
 
             List<Registration> registrations = JsonConvert.DeserializeObject<List<Registration>>(File.ReadAllText("Login&Password.json"))
                                                ?? new List<Registration>();
-
             registrations.Add(registration);
             
             StreamWriter sw = new StreamWriter(path);
