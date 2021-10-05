@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace ConsoleOnlineStore
+﻿namespace ConsoleOnlineStore
 {
     public class LoginData
     {
