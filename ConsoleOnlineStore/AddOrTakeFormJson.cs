@@ -9,10 +9,16 @@ namespace ConsoleOnlineStore
     {
         public static void AddNewUser(Registration registration)
         {
-           string path = Path.Combine(Environment.CurrentDirectory, "Login&Password.json");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Login&Password.json");
 
-            List<Registration> registrations = JsonConvert.DeserializeObject<List<Registration>>(File.ReadAllText("Login&Password.json"))
-                                               ?? new List<Registration>();
+            List<Registration> registrations = new List<Registration>();
+            
+            if (File.Exists("Login&Password.json"))
+            {
+                registrations = JsonConvert.DeserializeObject<List<Registration>>(File.ReadAllText("Login&Password.json"))
+                                ?? new List<Registration>();
+            }
+            
             registrations.Add(registration);
             
             StreamWriter sw = new StreamWriter(path);
@@ -22,10 +28,18 @@ namespace ConsoleOnlineStore
 
         public static List<LoginInStore> TakeUsersForCheck()
         {
-            List<LoginInStore> users =
-                JsonConvert.DeserializeObject<List<LoginInStore>>(File.ReadAllText("Login&Password.json"));
-
-            return users;
+            if (!File.Exists("Login&Password.json"))
+            {
+                List<LoginInStore> user = new List<LoginInStore>();
+                
+                return user;
+            }
+            
+            return JsonConvert.DeserializeObject<List<LoginInStore>>(
+                File.ReadAllText("Login&Password.json"));
         }
+        
+        public static List<Goods> TakeGoods()
+            => JsonConvert.DeserializeObject<List<Goods>>(File.ReadAllText("Goods.json"));
     }
 }
