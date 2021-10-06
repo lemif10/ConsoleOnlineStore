@@ -3,53 +3,48 @@ using System.Collections.Generic;
 
 namespace ConsoleOnlineStore
 {
-    public class LoginInStore : LoginData
+    public class LoginInStore
     {
         public delegate void LoginHandling(string message);
-        
+
         public event LoginHandling Notify;
-        
-        public void Join()
+
+        public void Join(User user)
         {
             Console.Write("Введите логин: ");
-            Login = Console.ReadLine();
+            user.Login = Console.ReadLine();
 
             Console.Write("Введите пароль: ");
-            Password = Console.ReadLine();
+            user.Password = Console.ReadLine();
 
-            if (CheckLoginAndPassword(AddOrTakeFormJson.TakeUsersForCheck()))
+            if (CheckLoginAndPassword(JsonSerializer.GetUser(), user))
             {
                 Console.Clear();
-                Notify?.Invoke($"Приветствуем в нашем магазине, {Name}!");
+                Notify?.Invoke($"Приветствуем в нашем магазине, {user.Name}!");
             }
             else
             {
                 Console.Clear();
                 Notify?.Invoke("Вы неверно указали логин или пароль. Попробуйте ещё раз");
-                Join();
+                Join(user);
             }
         }
 
-        private bool CheckLoginAndPassword(List<LoginInStore> users)
+        private bool CheckLoginAndPassword(List<User> users, User user)
         {
-            if (users is null)
-            {
-                return false;
-            }
+            if (users is null) return false;
 
-            foreach (LoginInStore user in users)
-            {
-                if (user.Login == Login)
+            foreach (var item in users)
+                if (item.Login == user.Login)
                 {
-                    if (user.Password == Password)
+                    if (item.Password == user.Password)
                     {
-                        Name = user.Name;
+                        user.Name = item.Name;
                         return true;
                     }
 
                     return false;
                 }
-            }
 
             return false;
         }
