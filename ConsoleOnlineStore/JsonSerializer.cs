@@ -7,18 +7,20 @@ namespace ConsoleOnlineStore
 {
     public static class JsonSerializer
     {
-        public static void AddNewUser(Registration registration)
+        public static void AddNewUser(User user)
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Login&Password.json");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Login&Password.json");
 
-            var registrations = new List<Registration>();
+            List<User> registrations = new List<User>();
 
             if (File.Exists("Login&Password.json"))
+            {
                 registrations =
-                    JsonConvert.DeserializeObject<List<Registration>>(File.ReadAllText("Login&Password.json"))
-                    ?? new List<Registration>();
+                JsonConvert.DeserializeObject<List<User>>(File.ReadAllText("Login&Password.json"))
+                ?? new List<User>(); 
+            }
 
-            registrations.Add(registration);
+            registrations.Add(user);
 
             using (var sw = new StreamWriter(path))
             {

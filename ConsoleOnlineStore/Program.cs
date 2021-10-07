@@ -5,8 +5,6 @@
         private static void Main()
         {
             ConsoleInterface.DisplayLoginWindow();
-
-            ConsoleInterface.DisplayMainWindow();
         }
     }
 }
