@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace ConsoleOnlineStore
 {
-    public static class JsonSerializer
+    public static class JsonStorage
     {
         public static void AddNewUser(User user)
         {
@@ -41,7 +41,7 @@ namespace ConsoleOnlineStore
                 File.ReadAllText("Login&Password.json"));
         }
 
-        public static List<Goods> TakeGoods()
+        public static List<Goods> GetGoods()
         {
             return JsonConvert.DeserializeObject<List<Goods>>(File.ReadAllText("Goods.json"));
         }

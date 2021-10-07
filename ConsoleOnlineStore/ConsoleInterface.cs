@@ -12,16 +12,16 @@ namespace ConsoleOnlineStore
 
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                Console.Clear();
-
                 if (key.Key == ConsoleKey.D1)
                 {
+                    Console.Clear();
                     DisplayJoinWindow();
                     break;
                 }
 
                 if (key.Key == ConsoleKey.D2)
                 {
+                    Console.Clear();
                     DisplayRegistrationWindow();
                     break;
                 }
@@ -30,48 +30,52 @@ namespace ConsoleOnlineStore
 
         private static void DisplayMainWindow()
         {
-            while (true)
-            {
-                Console.WriteLine(
+            Console.Clear();
+            
+            Console.WriteLine(
                     "1. Посмотреть каталог\n" +
                     "2. Посмотреть корзину.\n" +
                     "3. Посмотреть историю покупок\n" +
                     "4. Выйти из аккаунта");
 
+            while (true)
+            {
                 ConsoleKeyInfo key = Console.ReadKey(true);
-
-                Console.Clear();
 
                 if (key.Key == ConsoleKey.D1)
                 {
+                    Console.Clear();
                     DisplayCatalog();
+                    break;
                 }
-
+                
                 if (key.Key == ConsoleKey.D2)
                 {
+                    
                 }
-
+                
                 if (key.Key == ConsoleKey.D3)
                 {
+                    
                 }
-
+                
                 if (key.Key == ConsoleKey.D4)
                 {
                     Console.Clear();
                     DisplayLoginWindow();
+                    break;
                 }
             }
         }
 
         private static void DisplayCatalog()
         {
+            Console.WriteLine("1. Добавить предмет в корзину.\n" +
+                              "2. Выйти в меню\n");
+            
             Catalog catalog = new Catalog();
-
-            Console.WriteLine("1. Добавить предмет в корзину. 2. Выйти в меню");
             
-            Console.WriteLine();
-            
-            catalog.ShowGoods(JsonSerializer.TakeGoods());
+            catalog.ShowGoods(JsonStorage.GetGoods());
 
             while (true)
             {
@@ -81,7 +85,7 @@ namespace ConsoleOnlineStore
                 {
                     
                 }
-
+                
                 if (key.Key == ConsoleKey.D2)
                 {
                     Console.Clear();
@@ -108,19 +112,19 @@ namespace ConsoleOnlineStore
             Console.Write("Укажите ваше имя: ");
             user.Name = Console.ReadLine();
 
-            if (!registration.NewUser(JsonSerializer.GetUser(), user))
+            if (!registration.NewUser(JsonStorage.GetUser(), user))
             {
                 Console.Clear();
                 Console.WriteLine("Данный логин уже занят, попробуйте другой!");
                 DisplayRegistrationWindow();
             }
             
-            JsonSerializer.AddNewUser(user);
+            JsonStorage.AddNewUser(user);
+            
+            Console.WriteLine("1. Подтвердить регистрацию.\n2. Пройти регистрацию заново.");
 
             while (true)
             {
-                Console.WriteLine("1. Подтвердить регистрацию.\n2. Пройти регистрацию заново.");
-
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 Console.Clear();
@@ -151,9 +155,10 @@ namespace ConsoleOnlineStore
             Console.Write("Введите пароль: ");
             user.Password = Console.ReadLine();
             
-            if (loginInStore.Join(JsonSerializer.GetUser(), user))
+            if (loginInStore.Join(JsonStorage.GetUser(), user))
             {
                 Console.Clear();
+                Console.WriteLine($"Приветствуем {user.Name}!");
                 DisplayMainWindow();
             }
             else
