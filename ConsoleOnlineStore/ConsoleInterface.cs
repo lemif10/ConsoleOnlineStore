@@ -8,7 +8,8 @@ namespace ConsoleOnlineStore
         {
             while (true)
             {
-                Console.WriteLine("1. Войти в свой аккаунт\n2. Пройти регистрацию.");
+                Console.WriteLine("1. Войти в свой аккаунт\n" +
+                                  "2. Пройти регистрацию.");
 
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
@@ -30,8 +31,6 @@ namespace ConsoleOnlineStore
 
         private static void DisplayMainWindow()
         {
-            Console.Clear();
-            
             Console.WriteLine(
                     "1. Посмотреть каталог\n" +
                     "2. Посмотреть корзину.\n" +
@@ -75,8 +74,10 @@ namespace ConsoleOnlineStore
             
             Catalog catalog = new Catalog();
             
-            catalog.ShowGoods(JsonStorage.GetGoods());
-
+            catalog.ShowGoods();
+            
+            Console.WriteLine("1. Добавить предмет в корзину.\n" +
+                              "2. Выйти в меню\n");
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -97,7 +98,7 @@ namespace ConsoleOnlineStore
         
         private static void DisplayRegistrationWindow()
         {
-            Registration registration = new Registration();
+            AuthService authService = new AuthService();
 
             User user = new User();
 
@@ -111,33 +112,42 @@ namespace ConsoleOnlineStore
             
             Console.Write("Укажите ваше имя: ");
             user.Name = Console.ReadLine();
-
-            if (!registration.NewUser(JsonStorage.GetUser(), user))
-            {
-                Console.Clear();
-                Console.WriteLine("Данный логин уже занят, попробуйте другой!");
-                DisplayRegistrationWindow();
-            }
             
-            JsonStorage.AddNewUser(user);
-            
-            Console.WriteLine("1. Подтвердить регистрацию.\n2. Пройти регистрацию заново.");
+            Console.WriteLine("\n1. Подтвердить регистрацию.\n" +
+                              "2. Пройти регистрацию заново.\n" +
+                              "3. Покинуть окно регистрации");
 
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                Console.Clear();
-
                 if (key.Key == ConsoleKey.D1)
                 {
+                    if (!authService.NewUser(user))
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Данный логин уже занят, попробуйте другой!\n");
+                        DisplayRegistrationWindow();
+                    }
+                    
+                    JsonStorage.AddNewUser(user);
+                    
+                    Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
                     DisplayLoginWindow();
                     break;
                 }
 
                 if (key.Key == ConsoleKey.D2)
                 {
+                    Console.Clear();
                     DisplayRegistrationWindow();
+                    break;
+                }
+
+                if (key.Key == ConsoleKey.D3)
+                {
+                    Console.Clear();
+                    DisplayLoginWindow();
                     break;
                 }
             }
@@ -145,7 +155,7 @@ namespace ConsoleOnlineStore
 
         private static void DisplayJoinWindow()
         {
-            LoginInStore loginInStore = new LoginInStore();
+            AuthService authService = new AuthService();
             
             User user = new User();
             
@@ -154,18 +164,45 @@ namespace ConsoleOnlineStore
             
             Console.Write("Введите пароль: ");
             user.Password = Console.ReadLine();
+
+            Console.WriteLine("\n1. Подтвердить вход.\n" +
+                              "2. Указать другой логин или пароль.\n" +
+                              "3. Покинуть окно входа в акканут.");
             
-            if (loginInStore.Join(JsonStorage.GetUser(), user))
+            while (true)
             {
-                Console.Clear();
-                Console.WriteLine($"Приветствуем {user.Name}!");
-                DisplayMainWindow();
-            }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!");
-                DisplayJoinWindow();
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.D1)
+                {
+                    if (authService.Join(user))
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Приветствуем {user.Name}!");
+                        DisplayMainWindow();
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!");
+                        DisplayJoinWindow();
+                        break;
+                    }
+                }
+
+                if (key.Key == ConsoleKey.D2)
+                {
+                    Console.Clear();
+                    DisplayJoinWindow();
+                    break;
+                }
+
+                if (key.Key == ConsoleKey.D3)
+                {
+                    Console.Clear();
+                    DisplayLoginWindow();
+                    break;
+                }
             }
         }
     }
