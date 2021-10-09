@@ -50,7 +50,9 @@ namespace ConsoleOnlineStore
                 
                 if (key.Key == ConsoleKey.D2)
                 {
+                    Console.Clear();
                     DisplayBasket();
+                    break;
                 }
                 
                 if (key.Key == ConsoleKey.D3)
@@ -169,9 +171,9 @@ namespace ConsoleOnlineStore
         {
             Console.WriteLine("1. Произвести покупку\n" +
                               "2. Очистить корзину\n" +
-                              "3. Покинуть корзину");
+                              "3. Покинуть корзину\n");
 
-            Console.WriteLine($"К оплате за все товары: {Basket.ProductPrice()}");
+            Console.WriteLine($"К оплате за все товары: {Basket.ProductPrice()}\n");
             
             if (Basket.productsInBasket.Count == 0)
             {
@@ -211,6 +213,7 @@ namespace ConsoleOnlineStore
 
                         if (key2.Key == ConsoleKey.D2)
                         {
+                            Console.Clear();
                             DisplayBasket();
                         }
                     }
@@ -219,7 +222,10 @@ namespace ConsoleOnlineStore
                 if (key.Key == ConsoleKey.D2)
                 {
                     Console.Clear();
-                    DisplayMainWindow();
+                    
+                    Basket.productsInBasket.Clear();
+                    
+                    DisplayBasket();
                     break;
                 }
 

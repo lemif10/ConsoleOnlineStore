@@ -6,6 +6,11 @@ namespace ConsoleOnlineStore
     public static class Basket
     {
         public static List<Product> productsInBasket;
+
+        static Basket()
+        {
+            productsInBasket = new List<Product>();
+        }
         
         public static bool AddToBasket(int index, int count)
         {
