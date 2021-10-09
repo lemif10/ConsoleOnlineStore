@@ -1,14 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleOnlineStore
 {
-    public class Basket
+    public static class Basket
     {
-        private List<Product> productsInBasket = new List<Product>();
+        public static List<Product> productsInBasket;
         
-        public void AddToBasket(int index)
+        public static bool AddToBasket(int index, int count)
         {
-            productsInBasket.Add(JsonStorage.Products[index - 1]);
+            if (count >= 0 && count <= JsonStorage.Products[index - 1].Quantity
+                           && index >= 0 && JsonStorage.Products.Count > index)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static void PrintBasket()
+        {
+            for (int i = 0; i < productsInBasket.Count; i++)
+            {
+                Console.WriteLine($"Товар номер: {i + 1}");
+                Console.WriteLine($"Название: {productsInBasket[i].Name}");
+                Console.WriteLine($"Описание: {productsInBasket[i].Description}");
+                Console.WriteLine($"Количество: {productsInBasket[i].Quantity}");
+                Console.WriteLine($"Цена: {productsInBasket[i].Price}");
+                Console.WriteLine();
+            }
+        }
+        
+        public static decimal ProductPrice()
+        {
+            decimal price = 0;
+
+            foreach (Product product in productsInBasket)
+            {
+                price += product.Price * product.Quantity;
+            }
+
+            return price;
         }
     }
 }

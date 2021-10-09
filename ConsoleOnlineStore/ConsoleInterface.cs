@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Channels;
 
 namespace ConsoleOnlineStore
 {
@@ -7,11 +6,11 @@ namespace ConsoleOnlineStore
     {
         public static void DisplayLoginWindow()
         {
+            Console.WriteLine("1. Войти в свой аккаунт\n" +
+                              "2. Пройти регистрацию.");
+            
             while (true)
             {
-                Console.WriteLine("1. Войти в свой аккаунт\n" +
-                                  "2. Пройти регистрацию.");
-
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.D1)
@@ -51,7 +50,7 @@ namespace ConsoleOnlineStore
                 
                 if (key.Key == ConsoleKey.D2)
                 {
-                    
+                    DisplayBasket();
                 }
                 
                 if (key.Key == ConsoleKey.D3)
@@ -107,21 +106,22 @@ namespace ConsoleOnlineStore
         private static void DisplayAddToBasket()
         {
             Console.Write("Укажите номер товара: ");
+            Console.Write("Укажите количество товара: ");
 
-            if (int.TryParse(Console.ReadLine(), out int num))
+            if (int.TryParse(Console.ReadLine(), out int num) && int.TryParse(Console.ReadLine(), out int count))
             {
-                if (num < 0 && num >= JsonStorage.Products.Count)
+                if (Basket.AddToBasket(num, count))
                 {
                     Console.Clear();
-                    Console.WriteLine("Вы указали несуществующий номер товара, просмотрите каталог и попробуйте ещё раз\n");
+                    Console.WriteLine("Вы указали неверный номер товара или его количество, просмотрите каталог и попробуйте ещё раз\n");
                     DisplayCatalog();
                 }
                 
                 Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
-                Console.WriteLine(JsonStorage.Products[num - 1].Name);
-                Console.WriteLine(JsonStorage.Products[num - 1].Description);
-                Console.WriteLine(JsonStorage.Products[num - 1].Quantity);
-                Console.WriteLine(JsonStorage.Products[num - 1].Price);
+                Console.WriteLine($"Название: {JsonStorage.Products[num - 1].Name}");
+                Console.WriteLine($"Описание: {JsonStorage.Products[num - 1].Description}");
+                Console.WriteLine($"Количество: {count}");
+                Console.WriteLine($"Цена за штуку: {JsonStorage.Products[num - 1].Price}");
 
                 Console.WriteLine("1. Добавить товар в корзину.\n" +
                                   "2. Указать другой номер товара.\n" +
@@ -134,6 +134,11 @@ namespace ConsoleOnlineStore
                     if (key.Key == ConsoleKey.D1)
                     {
                         Console.Clear();
+
+                        Basket.productsInBasket.Add(JsonStorage.Products[num - 1]);
+                        Basket.productsInBasket[^1].Quantity = count;
+                        
+                        Console.WriteLine("Вы успешно добавили товар в корзину!\n");
                         DisplayCatalog();
                     }
                 
@@ -162,7 +167,69 @@ namespace ConsoleOnlineStore
 
         private static void DisplayBasket()
         {
+            Console.WriteLine("1. Произвести покупку\n" +
+                              "2. Очистить корзину\n" +
+                              "3. Покинуть корзину");
+
+            Console.WriteLine($"К оплате за все товары: {Basket.ProductPrice()}");
             
+            if (Basket.productsInBasket.Count == 0)
+            {
+                Console.WriteLine("Ваша корзина пуста!");
+            }
+            else
+            {
+                Basket.PrintBasket();
+            }
+            
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.D1)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine("Подтвердить покупку товара?\n" +
+                                      "1. Да.\n" +
+                                      "2. Нет");
+
+                    while (true)
+                    {
+                        ConsoleKeyInfo key2 = Console.ReadKey(true);
+
+                        if (key2.Key == ConsoleKey.D1)
+                        {
+                            Console.Clear();
+
+                            Console.WriteLine("Поздравлем с успешной покупкой!\n");
+                            
+                            Basket.productsInBasket.Clear();
+                            
+                            DisplayMainWindow();
+                        }
+
+                        if (key2.Key == ConsoleKey.D2)
+                        {
+                            DisplayBasket();
+                        }
+                    }
+                }
+                
+                if (key.Key == ConsoleKey.D2)
+                {
+                    Console.Clear();
+                    DisplayMainWindow();
+                    break;
+                }
+
+                if (key.Key == ConsoleKey.D3)
+                {
+                    Console.Clear();
+                    DisplayMainWindow();
+                    break;
+                }
+            }
         }
 
         private static void DisplayRegistrationWindow()
@@ -201,6 +268,7 @@ namespace ConsoleOnlineStore
                     
                     JsonStorage.AddNewUser(user);
                     
+                    Console.Clear();
                     Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
                     DisplayLoginWindow();
                     break;
