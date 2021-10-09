@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Channels;
 
 namespace ConsoleOnlineStore
 {
@@ -72,19 +73,26 @@ namespace ConsoleOnlineStore
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
                               "2. Выйти в меню\n");
             
-            Catalog catalog = new Catalog();
-            
-            catalog.ShowGoods();
+            for (int i = 0; i < JsonStorage.Products.Count; i++)
+            {
+                Console.WriteLine($"Номер товара: {i + 1}");
+                Console.WriteLine($"Название: {JsonStorage.Products[i].Name}");
+                Console.WriteLine($"Описание: {JsonStorage.Products[i].Description}");
+                Console.WriteLine($"Количество: {JsonStorage.Products[i].Quantity}");
+                Console.WriteLine($"Цена: {JsonStorage.Products[i].Price}");
+                Console.WriteLine();
+            }
             
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
-                              "2. Выйти в меню\n");
+                              "2. Выйти в меню");
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 if (key.Key == ConsoleKey.D1)
                 {
-                    
+                    Console.Clear();
+                    DisplayAddToBasket();
                 }
                 
                 if (key.Key == ConsoleKey.D2)
@@ -95,7 +103,68 @@ namespace ConsoleOnlineStore
                 }
             }
         }
-        
+
+        private static void DisplayAddToBasket()
+        {
+            Console.Write("Укажите номер товара: ");
+
+            if (int.TryParse(Console.ReadLine(), out int num))
+            {
+                if (num < 0 && num >= JsonStorage.Products.Count)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Вы указали несуществующий номер товара, просмотрите каталог и попробуйте ещё раз\n");
+                    DisplayCatalog();
+                }
+                
+                Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
+                Console.WriteLine(JsonStorage.Products[num - 1].Name);
+                Console.WriteLine(JsonStorage.Products[num - 1].Description);
+                Console.WriteLine(JsonStorage.Products[num - 1].Quantity);
+                Console.WriteLine(JsonStorage.Products[num - 1].Price);
+
+                Console.WriteLine("1. Добавить товар в корзину.\n" +
+                                  "2. Указать другой номер товара.\n" +
+                                  "3. Вернуться в каталог.\n");
+                
+                while (true)
+                {
+                    ConsoleKeyInfo key = Console.ReadKey(true);
+
+                    if (key.Key == ConsoleKey.D1)
+                    {
+                        Console.Clear();
+                        DisplayCatalog();
+                    }
+                
+                    if (key.Key == ConsoleKey.D2)
+                    {
+                        Console.Clear();
+                        DisplayAddToBasket();
+                        break;
+                    }
+                    
+                    if (key.Key == ConsoleKey.D3)
+                    {
+                        Console.Clear();
+                        DisplayCatalog();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Вы указали Не число, просмотрите каталог и попробуйте ещё раз.\n");
+                DisplayCatalog();
+            }
+        }
+
+        private static void DisplayBasket()
+        {
+            
+        }
+
         private static void DisplayRegistrationWindow()
         {
             AuthService authService = new AuthService();
@@ -178,13 +247,13 @@ namespace ConsoleOnlineStore
                     if (authService.Join(user))
                     {
                         Console.Clear();
-                        Console.WriteLine($"Приветствуем {user.Name}!");
+                        Console.WriteLine($"Приветствуем {user.Name}!\n");
                         DisplayMainWindow();
                     }
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!");
+                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n");
                         DisplayJoinWindow();
                         break;
                     }
