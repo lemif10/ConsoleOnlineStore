@@ -11,12 +11,8 @@ namespace ConsoleOnlineStore
 
         private const string PathProduct =
             @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\Products.json";
-        
-        public static readonly List<Product> Products;
-        static JsonStorage()
-        {
-            Products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
-        }
+
+        private const string PathHistory = "";
         
         public static void AddNewUser(User user)
         {
@@ -34,6 +30,27 @@ namespace ConsoleOnlineStore
         public static List<User> GetUser()
         {
             return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathLogin));
+        }
+
+        public static List<Product> GetProduct()
+        {
+            return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
+        }
+
+        public static void AddNewPurchaseHistory(List<Product> products)
+        {
+            List<Product> basketHistory = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathLogin))
+                               ?? new List<Product>();
+
+            foreach (Product product in products)
+            {
+                basketHistory.Add(product);
+            }
+            
+            using (StreamWriter streamWriter = new StreamWriter(PathLogin))
+            {
+                streamWriter.WriteLine(JsonConvert.SerializeObject(basketHistory, Formatting.Indented));
+            }
         }
     }
 }

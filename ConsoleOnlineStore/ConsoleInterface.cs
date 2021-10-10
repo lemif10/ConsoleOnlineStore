@@ -73,19 +73,24 @@ namespace ConsoleOnlineStore
         {
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
                               "2. Выйти в меню\n");
+
+            Basket basket = new Basket();
             
-            for (int i = 0; i < JsonStorage.Products.Count; i++)
+            for (int i = 0; i < basket.Products.Count; i++)
             {
                 Console.WriteLine($"Номер товара: {i + 1}");
-                Console.WriteLine($"Название: {JsonStorage.Products[i].Name}");
-                Console.WriteLine($"Описание: {JsonStorage.Products[i].Description}");
-                Console.WriteLine($"Количество: {JsonStorage.Products[i].Quantity}");
-                Console.WriteLine($"Цена: {JsonStorage.Products[i].Price}");
+                Console.WriteLine($"Название: {basket.Products[i].Name}");
+                Console.WriteLine($"Описание: {basket.Products[i].Description}");
+                Console.WriteLine($"Количество: {basket.Products[i].Quantity}");
+                Console.WriteLine($"Цена: {basket.Products[i].Price}");
                 Console.WriteLine();
             }
-            
+
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
                               "2. Выйти в меню");
+
+            Console.SetCursorPosition(0, 0);
+
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -108,80 +113,87 @@ namespace ConsoleOnlineStore
         private static void DisplayAddToBasket()
         {
             Console.Write("Укажите номер товара: ");
+            string num = Console.ReadLine();
             Console.Write("Укажите количество товара: ");
+            string quantity = Console.ReadLine();
 
-            if (int.TryParse(Console.ReadLine(), out int num) && int.TryParse(Console.ReadLine(), out int count))
+            Basket basket = new Basket();
+            
+            if (num == "" || quantity == "" || num is null || quantity is null)
             {
-                if (Basket.AddToBasket(num, count))
-                {
-                    Console.Clear();
-                    Console.WriteLine("Вы указали неверный номер товара или его количество, просмотрите каталог и попробуйте ещё раз\n");
-                    DisplayCatalog();
-                }
-                
-                Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
-                Console.WriteLine($"Название: {JsonStorage.Products[num - 1].Name}");
-                Console.WriteLine($"Описание: {JsonStorage.Products[num - 1].Description}");
-                Console.WriteLine($"Количество: {count}");
-                Console.WriteLine($"Цена за штуку: {JsonStorage.Products[num - 1].Price}");
-
-                Console.WriteLine("1. Добавить товар в корзину.\n" +
-                                  "2. Указать другой номер товара.\n" +
-                                  "3. Вернуться в каталог.\n");
-                
-                while (true)
-                {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-
-                    if (key.Key == ConsoleKey.D1)
-                    {
-                        Console.Clear();
-
-                        Basket.productsInBasket.Add(JsonStorage.Products[num - 1]);
-                        Basket.productsInBasket[^1].Quantity = count;
-                        
-                        Console.WriteLine("Вы успешно добавили товар в корзину!\n");
-                        DisplayCatalog();
-                    }
-                
-                    if (key.Key == ConsoleKey.D2)
-                    {
-                        Console.Clear();
-                        DisplayAddToBasket();
-                        break;
-                    }
-                    
-                    if (key.Key == ConsoleKey.D3)
-                    {
-                        Console.Clear();
-                        DisplayCatalog();
-                        break;
-                    }
-                }
+                Console.Clear();
+                Console.WriteLine("Вы не указали номер товара или его количество, попробуйте ещё раз");
+                DisplayAddToBasket();
+            }
+            else if(!basket.AddToBasket(num, quantity))
+            {
+                Console.Clear();
+                Console.WriteLine("Вы указали неверный номер товара или его количество, просмотрите каталог ещё раз!\n");
+                DisplayCatalog();
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("Вы указали Не число, просмотрите каталог и попробуйте ещё раз.\n");
-                DisplayCatalog();
+                Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
+                Console.WriteLine($"Название: {basket.Products[int.Parse(num) - 1].Name}"); 
+                Console.WriteLine($"Описание: {basket.Products[int.Parse(num) - 1].Description}"); 
+                Console.WriteLine($"Количество: {int.Parse(quantity)}");
+                Console.WriteLine($"Цена за штуку: {basket.Products[int.Parse(num) - 1].Price}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("1. Добавить товар в корзину.\n" +
+                              "2. Указать другой номер товара.\n" +
+                              "3. Вернуться в каталог.");
+            while (true) 
+            { 
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if (key.Key == ConsoleKey.D1) 
+                { 
+                    Console.Clear();
+                    
+                    Basket.ProductsInBasket.Add(basket.Products[int.Parse(num ?? string.Empty) - 1]); 
+                    Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+                    
+                    Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
+                    
+                    DisplayCatalog();
+                    break;
+                }
+                
+                if (key.Key == ConsoleKey.D2) 
+                { 
+                    Console.Clear(); 
+                    DisplayAddToBasket();
+                    break;
+                }
+                
+                if (key.Key == ConsoleKey.D3) 
+                { 
+                    Console.Clear(); 
+                    DisplayCatalog(); 
+                    break;
+                }
             }
         }
-
+        
         private static void DisplayBasket()
         {
             Console.WriteLine("1. Произвести покупку\n" +
                               "2. Очистить корзину\n" +
                               "3. Покинуть корзину\n");
 
-            Console.WriteLine($"К оплате за все товары: {Basket.ProductPrice()}\n");
+            Basket basket = new Basket();
             
-            if (Basket.productsInBasket.Count == 0)
+            Console.WriteLine($"К оплате за все товары: {basket.ProductPrice()}\n");
+            
+            if (Basket.ProductsInBasket.Count == 0)
             {
                 Console.WriteLine("Ваша корзина пуста!");
             }
             else
             {
-                Basket.PrintBasket();
+                basket.PrintBasket();
             }
             
             while (true)
@@ -206,7 +218,7 @@ namespace ConsoleOnlineStore
 
                             Console.WriteLine("Поздравлем с успешной покупкой!\n");
                             
-                            Basket.productsInBasket.Clear();
+                            Basket.ProductsInBasket.Clear();
                             
                             DisplayMainWindow();
                         }
@@ -223,7 +235,7 @@ namespace ConsoleOnlineStore
                 {
                     Console.Clear();
                     
-                    Basket.productsInBasket.Clear();
+                    Basket.ProductsInBasket.Clear();
                     
                     DisplayBasket();
                     break;

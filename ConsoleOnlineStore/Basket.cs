@@ -3,44 +3,51 @@ using System.Collections.Generic;
 
 namespace ConsoleOnlineStore
 {
-    public static class Basket
+    public class Basket
     {
-        public static List<Product> productsInBasket;
+        public readonly List<Product> Products;
+        
+        public static readonly List<Product> ProductsInBasket = new List<Product>();
 
-        static Basket()
+        public Basket()
         {
-            productsInBasket = new List<Product>();
+            Products = JsonStorage.GetProduct();
         }
         
-        public static bool AddToBasket(int index, int count)
+        public bool AddToBasket(string index, string quantity)
         {
-            if (count >= 0 && count <= JsonStorage.Products[index - 1].Quantity
-                           && index >= 0 && JsonStorage.Products.Count > index)
+            if (int.TryParse(index, out int ind) && int.TryParse(quantity, out int quan))
             {
+                if (ind < 0 || ind >= Products.Count  || quan <= 0 ||
+                    quan > Products[ind - 1].Quantity)
+                {
+                    return false;
+                }
+                
                 return true;
             }
 
             return false;
         }
 
-        public static void PrintBasket()
+        public void PrintBasket()
         {
-            for (int i = 0; i < productsInBasket.Count; i++)
+            for (int i = 0; i < ProductsInBasket.Count; i++)
             {
                 Console.WriteLine($"Товар номер: {i + 1}");
-                Console.WriteLine($"Название: {productsInBasket[i].Name}");
-                Console.WriteLine($"Описание: {productsInBasket[i].Description}");
-                Console.WriteLine($"Количество: {productsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена: {productsInBasket[i].Price}");
+                Console.WriteLine($"Название: {ProductsInBasket[i].Name}");
+                Console.WriteLine($"Описание: {ProductsInBasket[i].Description}");
+                Console.WriteLine($"Количество: {ProductsInBasket[i].Quantity}");
+                Console.WriteLine($"Цена: {ProductsInBasket[i].Price}");
                 Console.WriteLine();
             }
         }
         
-        public static decimal ProductPrice()
+        public decimal ProductPrice()
         {
             decimal price = 0;
 
-            foreach (Product product in productsInBasket)
+            foreach (Product product in ProductsInBasket)
             {
                 price += product.Price * product.Quantity;
             }
