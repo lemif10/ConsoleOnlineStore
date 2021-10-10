@@ -57,7 +57,9 @@ namespace ConsoleOnlineStore
                 
                 if (key.Key == ConsoleKey.D3)
                 {
-                    
+                    Console.Clear();
+                    DisplayPurchaseHistory();
+                    break;
                 }
                 
                 if (key.Key == ConsoleKey.D4)
@@ -218,6 +220,8 @@ namespace ConsoleOnlineStore
 
                             Console.WriteLine("Поздравлем с успешной покупкой!\n");
                             
+                            JsonStorage.AddNewPurchaseHistory(basket.MakePurchaseHistory());
+                            
                             Basket.ProductsInBasket.Clear();
                             
                             DisplayMainWindow();
@@ -248,6 +252,11 @@ namespace ConsoleOnlineStore
                     break;
                 }
             }
+        }
+
+        private static void DisplayPurchaseHistory()
+        {
+            
         }
 
         private static void DisplayRegistrationWindow()

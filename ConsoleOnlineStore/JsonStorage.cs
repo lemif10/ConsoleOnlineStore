@@ -12,7 +12,7 @@ namespace ConsoleOnlineStore
         private const string PathProduct =
             @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\Products.json";
 
-        private const string PathHistory = "";
+        private const string PathHistory = @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\PurchaseHistory.json";
         
         public static void AddNewUser(User user)
         {
@@ -37,20 +37,25 @@ namespace ConsoleOnlineStore
             return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
         }
 
-        public static void AddNewPurchaseHistory(List<Product> products)
+        public static void AddNewPurchaseHistory(List<PurchaseHistory> purchaseHistories)
         {
-            List<Product> basketHistory = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathLogin))
-                               ?? new List<Product>();
+            List<PurchaseHistory> basketHistory = JsonConvert.DeserializeObject<List<PurchaseHistory>>(File.ReadAllText(PathHistory))
+                               ?? new List<PurchaseHistory>();
 
-            foreach (Product product in products)
+            foreach (PurchaseHistory purchaseHistory in purchaseHistories)
             {
-                basketHistory.Add(product);
+                basketHistory.Add(purchaseHistory);
             }
             
-            using (StreamWriter streamWriter = new StreamWriter(PathLogin))
+            using (StreamWriter streamWriter = new StreamWriter(PathHistory))
             {
                 streamWriter.WriteLine(JsonConvert.SerializeObject(basketHistory, Formatting.Indented));
             }
+        }
+
+        public static List<PurchaseHistory> GetPurchaseHistory()
+        {
+            return JsonConvert.DeserializeObject<List<PurchaseHistory>>(File.ReadAllText(PathLogin));
         }
     }
 }

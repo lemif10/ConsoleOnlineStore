@@ -31,6 +31,10 @@
       <Content Include="Login&amp;Password.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="PurchaseHistory.json" />
+      <Content Include="PurchaseHistory.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
