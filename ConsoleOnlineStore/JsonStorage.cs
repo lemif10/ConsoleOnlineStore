@@ -55,14 +55,14 @@ namespace ConsoleOnlineStore
             return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
         }
 
-        public static void AddNewPurchaseHistory(List<PurchaseHistory> purchaseHistories)
+        public static void AddNewPurchaseHistory(List<ProductHistory> productHistories)
         {
-            List<PurchaseHistory> basketHistory = JsonConvert.DeserializeObject<List<PurchaseHistory>>(File.ReadAllText(PathHistory))
-                               ?? new List<PurchaseHistory>();
+            List<ProductHistory> basketHistory = JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory))
+                               ?? new List<ProductHistory>();
 
-            foreach (PurchaseHistory purchaseHistory in purchaseHistories)
+            foreach (ProductHistory productHistory in productHistories)
             {
-                basketHistory.Add(purchaseHistory);
+                basketHistory.Add(productHistory);
             }
             
             using (StreamWriter streamWriter = new StreamWriter(PathHistory))
@@ -71,9 +71,9 @@ namespace ConsoleOnlineStore
             }
         }
 
-        public static List<PurchaseHistory> GetPurchaseHistory()
+        public static List<ProductHistory> GetPurchaseHistory()
         {
-            return JsonConvert.DeserializeObject<List<PurchaseHistory>>(File.ReadAllText(PathLogin));
+            return JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory));
         }
     }
 }

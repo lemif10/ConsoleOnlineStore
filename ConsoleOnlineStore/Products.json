@@ -1,26 +1,26 @@
-﻿[
+[
   {
     "Name": "Бабл Квас",
     "Description": "Экзотический квас с уникальным вкусом!",
-    "Quantity": 32,
+    "Quantity": 27,
     "Price": 3.20
   },
   {
     "Name": "Сомнительная еда",
     "Description": "Еда на крайний случай вашей жизни!",
-    "Quantity": 213,
+    "Quantity": 211,
     "Price": 0.99
   },
   {
     "Name": "Полесская жаба",
     "Description": "Жаба во фритюре!",
-    "Quantity": 46,
+    "Quantity": 43,
     "Price": 2.51
   },
   {
     "Name": "Данила",
     "Description": "Игрушка которая просто лежит!",
-    "Quantity": 12,
+    "Quantity": 10,
     "Price": 9.99
   },
   {
@@ -44,7 +44,7 @@
   {
     "Name": "'Бамбук'",
     "Description": "Сигареты на основе бамбука!",
-    "Quantity": 102,
+    "Quantity": 94,
     "Price": 2.90
   },
   {

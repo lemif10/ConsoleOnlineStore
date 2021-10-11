@@ -5,11 +5,9 @@ namespace ConsoleOnlineStore
 {
     public class Basket
     {
-        public static string Login { get; set; }
-        
         public readonly List<Product> Products;
         
-        public static readonly List<Product> ProductsInBasket = new List<Product>();
+        public static readonly List<Product> ProductsInBasket = new();
 
         public Basket()
         {
@@ -57,25 +55,6 @@ namespace ConsoleOnlineStore
             }
 
             return price;
-        }
-
-        public List<PurchaseHistory> MakePurchaseHistory()
-        {
-            List<PurchaseHistory> purchaseHistories = new List<PurchaseHistory>();
-
-            PurchaseHistory purchaseHistory = new PurchaseHistory();
-            
-            foreach (Product product in ProductsInBasket)
-            {
-                purchaseHistory.Login = Login;
-                purchaseHistory.Name = product.Name;
-                purchaseHistory.Description = product.Description;
-                purchaseHistory.Quantity = product.Quantity;
-                purchaseHistory.Price = product.Price;
-                purchaseHistories.Add(purchaseHistory);
-            }
-
-            return purchaseHistories;
         }
 
         public List<Product> SoldQuantity()

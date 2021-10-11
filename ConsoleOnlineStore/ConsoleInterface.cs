@@ -84,7 +84,7 @@ namespace ConsoleOnlineStore
                 Console.WriteLine($"Название: {basket.Products[i].Name}");
                 Console.WriteLine($"Описание: {basket.Products[i].Description}");
                 Console.WriteLine($"Количество: {basket.Products[i].Quantity}");
-                Console.WriteLine($"Цена: {basket.Products[i].Price}");
+                Console.WriteLine($"Цена за штуку: {basket.Products[i].Price}");
                 Console.WriteLine();
             }
 
@@ -197,6 +197,8 @@ namespace ConsoleOnlineStore
             {
                 basket.PrintBasket();
             }
+
+            Console.SetCursorPosition(0, 0 );
             
             while (true)
             {
@@ -219,10 +221,12 @@ namespace ConsoleOnlineStore
                             Console.Clear();
 
                             Console.WriteLine("Поздравлем с успешной покупкой!\n");
+
+                            PurchaseHistory purchaseHistory = new();
                             
                             JsonStorage.NewProductsQuantity(basket.SoldQuantity());
                             
-                            JsonStorage.AddNewPurchaseHistory(basket.MakePurchaseHistory());
+                            JsonStorage.AddNewPurchaseHistory(purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
                             
                             Basket.ProductsInBasket.Clear();
 
@@ -258,7 +262,34 @@ namespace ConsoleOnlineStore
 
         private static void DisplayPurchaseHistory()
         {
+            Console.WriteLine("1. Покинуть историю покупок\n");
             
+            PurchaseHistory purchaseHistory = new();
+
+            foreach (Product product in purchaseHistory.SelectPurchaseHistory())
+            {
+                Console.WriteLine($"Название: {product.Name}");
+                Console.WriteLine($"Описание: {product.Description}");
+                Console.WriteLine($"Количество: {product.Quantity}");
+                Console.WriteLine($"Цена покупки: {product.Price}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("1. Покинуть историю покупок");
+
+            Console.SetCursorPosition(0, 0);
+            
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.D1)
+                {
+                    Console.Clear();
+                    DisplayMainWindow();
+                    break;
+                }
+            }
         }
 
         private static void DisplayRegistrationWindow()

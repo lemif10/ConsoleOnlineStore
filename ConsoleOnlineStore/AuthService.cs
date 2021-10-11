@@ -25,7 +25,7 @@ namespace ConsoleOnlineStore
                     if (item.Password == user.Password)
                     {
                         user.Name = item.Name;
-                        Basket.Login = item.Login;
+                        PurchaseHistory.Login = item.Login;
                         return true;
                     }
 
