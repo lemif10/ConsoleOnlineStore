@@ -156,7 +156,7 @@ namespace ConsoleOnlineStore
                     
                     Basket.ProductsInBasket.Add(basket.Products[int.Parse(num ?? string.Empty) - 1]); 
                     Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
-                    
+
                     Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
                     
                     DisplayCatalog();
@@ -220,10 +220,12 @@ namespace ConsoleOnlineStore
 
                             Console.WriteLine("Поздравлем с успешной покупкой!\n");
                             
+                            JsonStorage.NewProductsQuantity(basket.SoldQuantity());
+                            
                             JsonStorage.AddNewPurchaseHistory(basket.MakePurchaseHistory());
                             
                             Basket.ProductsInBasket.Clear();
-                            
+
                             DisplayMainWindow();
                         }
 

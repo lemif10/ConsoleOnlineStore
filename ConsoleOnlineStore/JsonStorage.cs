@@ -32,6 +32,24 @@ namespace ConsoleOnlineStore
             return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathLogin));
         }
 
+        public static void NewProductsQuantity(List<Product> newQuantity)
+        {
+            List<Product> products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathLogin))
+                               ?? new List<Product>();
+            
+            products.Clear();
+
+            foreach (Product product in newQuantity)
+            {
+                products.Add(product);
+            }
+
+            using (StreamWriter streamWriter = new StreamWriter(PathProduct))
+            {
+                streamWriter.WriteLine(JsonConvert.SerializeObject(products, Formatting.Indented));
+            }
+        }
+        
         public static List<Product> GetProduct()
         {
             return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));

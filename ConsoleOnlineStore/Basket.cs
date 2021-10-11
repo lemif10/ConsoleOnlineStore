@@ -52,6 +52,8 @@ namespace ConsoleOnlineStore
             foreach (Product product in ProductsInBasket)
             {
                 price += product.Price * product.Quantity;
+
+                product.Price *= product.Quantity;
             }
 
             return price;
@@ -74,6 +76,22 @@ namespace ConsoleOnlineStore
             }
 
             return purchaseHistories;
+        }
+
+        public List<Product> SoldQuantity()
+        {
+            foreach (Product product in Products)
+            {
+                foreach (Product productInBasket in ProductsInBasket)
+                {
+                    if (product.Name == productInBasket.Name)
+                    {
+                        product.Quantity -= productInBasket.Quantity;
+                    }
+                }
+            }
+
+            return Products;
         }
     }
 }

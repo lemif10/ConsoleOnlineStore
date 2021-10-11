@@ -19,5 +19,40 @@
     "Description": "Экзотический квас с уникальным вкусом!",
     "Quantity": 1,
     "Price": 3.20
+  },
+  {
+    "Login": "Lemif",
+    "Name": "Данила",
+    "Description": "Игрушка которая просто лежит!",
+    "Quantity": 2,
+    "Price": 9.99
+  },
+  {
+    "Login": "Lemif",
+    "Name": "Бабл Квас",
+    "Description": "Экзотический квас с уникальным вкусом!",
+    "Quantity": 2,
+    "Price": 6.40
+  },
+  {
+    "Login": "Lemif",
+    "Name": "Бабл Квас",
+    "Description": "Экзотический квас с уникальным вкусом!",
+    "Quantity": 2,
+    "Price": 6.40
+  },
+  {
+    "Login": "Lemif",
+    "Name": "Сомнительная еда",
+    "Description": "Еда на крайний случай вашей жизни!",
+    "Quantity": 1,
+    "Price": 0.99
+  },
+  {
+    "Login": "Lemif",
+    "Name": "Сомнительная еда",
+    "Description": "Еда на крайний случай вашей жизни!",
+    "Quantity": 1,
+    "Price": 0.99
   }
 ]
