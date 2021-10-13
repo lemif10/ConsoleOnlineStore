@@ -4,7 +4,7 @@ namespace ConsoleOnlineStore
 {
     public static class ConsoleInterface
     {
-        public static void DisplayLoginWindow()
+        public static void DisplayAuthWindow()
         {
             Console.WriteLine("1. Войти в свой аккаунт\n" +
                               "2. Пройти регистрацию.");
@@ -16,7 +16,7 @@ namespace ConsoleOnlineStore
                 if (key.Key == ConsoleKey.D1)
                 {
                     Console.Clear();
-                    DisplayJoinWindow();
+                    DisplayLoginWindow();
                     break;
                 }
 
@@ -65,7 +65,7 @@ namespace ConsoleOnlineStore
                 if (key.Key == ConsoleKey.D4)
                 {
                     Console.Clear();
-                    DisplayLoginWindow();
+                    DisplayAuthWindow();
                     break;
                 }
             }
@@ -266,12 +266,13 @@ namespace ConsoleOnlineStore
             
             PurchaseHistory purchaseHistory = new();
 
-            foreach (Product product in purchaseHistory.SelectPurchaseHistory())
+            foreach (ProductHistory product in purchaseHistory.SelectPurchaseHistory())
             {
                 Console.WriteLine($"Название: {product.Name}");
                 Console.WriteLine($"Описание: {product.Description}");
                 Console.WriteLine($"Количество: {product.Quantity}");
                 Console.WriteLine($"Цена покупки: {product.Price}");
+                Console.WriteLine($"Дата покупки: {product.Date.ToShortDateString()}");
                 Console.WriteLine();
             }
 
@@ -308,6 +309,24 @@ namespace ConsoleOnlineStore
             
             Console.Write("Укажите ваше имя: ");
             user.Name = Console.ReadLine();
+
+            if (user.Login?.Length <= 2)
+            {
+                Console.WriteLine("Вы указали слишком короткий логин, попробуйте ещё раз!");
+                DisplayRegistrationWindow();
+            }
+            
+            if (user.Password?.Length <= 3)
+            {
+                Console.WriteLine("Вы указали слишком короткий пароль, попробуйте ещё раз!");
+                DisplayRegistrationWindow();
+            }
+            
+            if (user.Name?.Length <= 1)
+            {
+                Console.WriteLine("Вы указали слишком короткое имя, попробуйте ещё раз!");
+                DisplayRegistrationWindow();
+            }
             
             Console.WriteLine("\n1. Подтвердить регистрацию.\n" +
                               "2. Пройти регистрацию заново.\n" +
@@ -319,7 +338,7 @@ namespace ConsoleOnlineStore
 
                 if (key.Key == ConsoleKey.D1)
                 {
-                    if (!authService.NewUser(user))
+                    if (authService.AddNewUser(user))
                     {
                         Console.Clear();
                         Console.WriteLine("Данный логин уже занят, попробуйте другой!\n");
@@ -330,7 +349,7 @@ namespace ConsoleOnlineStore
                     
                     Console.Clear();
                     Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
-                    DisplayLoginWindow();
+                    DisplayAuthWindow();
                     break;
                 }
 
@@ -344,13 +363,13 @@ namespace ConsoleOnlineStore
                 if (key.Key == ConsoleKey.D3)
                 {
                     Console.Clear();
-                    DisplayLoginWindow();
+                    DisplayAuthWindow();
                     break;
                 }
             }
         }
 
-        private static void DisplayJoinWindow()
+        private static void DisplayLoginWindow()
         {
             AuthService authService = new AuthService();
             
@@ -372,32 +391,31 @@ namespace ConsoleOnlineStore
 
                 if (key.Key == ConsoleKey.D1)
                 {
-                    if (authService.Join(user))
+                    if (authService.Login(user))
                     {
                         Console.Clear();
                         Console.WriteLine($"Приветствуем {user.Name}!\n");
                         DisplayMainWindow();
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n");
-                        DisplayJoinWindow();
                         break;
                     }
+                    
+                    Console.Clear();
+                    Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n"); 
+                    DisplayLoginWindow(); 
+                    break;
                 }
 
                 if (key.Key == ConsoleKey.D2)
                 {
                     Console.Clear();
-                    DisplayJoinWindow();
+                    DisplayLoginWindow();
                     break;
                 }
 
                 if (key.Key == ConsoleKey.D3)
                 {
                     Console.Clear();
-                    DisplayLoginWindow();
+                    DisplayAuthWindow();
                     break;
                 }
             }

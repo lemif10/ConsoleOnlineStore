@@ -6,36 +6,49 @@ namespace ConsoleOnlineStore
 {
     public static class JsonStorage
     {
-        private const string PathLogin = 
-            @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\Login&Password.json";
+        private static string PathUser { get;} = Path.Combine(Directory.GetCurrentDirectory(), "Users.json");
+        
+        private static string PathProduct { get;} = Path.Combine(Directory.GetCurrentDirectory(), "Products.json");
 
-        private const string PathProduct =
-            @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\Products.json";
-
-        private const string PathHistory = @"C:\Users\RedmiBook\RiderProjects\ConsoleOnlineStore\ConsoleOnlineStore\PurchaseHistory.json";
+        private static string PathHistory { get;} = Path.Combine(Directory.GetCurrentDirectory(), "PurchaseHistory.json");
         
         public static void AddNewUser(User user)
         {
-            List<User> users = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathLogin))
+            if (!File.Exists(PathUser))
+            {
+                File.Create(PathUser);
+            }
+            
+            List<User> users = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathUser))
                                ?? new List<User>();
             
             users.Add(user);
 
-            using (StreamWriter streamWriter = new StreamWriter(PathLogin))
+            using (StreamWriter streamWriter = new StreamWriter(PathUser))
             {
                 streamWriter.WriteLine(JsonConvert.SerializeObject(users, Formatting.Indented));
             }
         }
 
-        public static List<User> GetUser()
+        public static List<User> GetUsers()
         {
-            return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathLogin));
+            if (!File.Exists(PathUser))
+            {
+                File.Create(PathUser);
+            }
+            
+            return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathUser));
         }
 
         public static void NewProductsQuantity(List<Product> newQuantity)
         {
-            List<Product> products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathLogin))
-                               ?? new List<Product>();
+            if (!File.Exists(PathProduct))
+            {
+                File.Create(PathProduct);
+            }
+            
+            List<Product> products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct))
+                                     ?? new List<Product>();
             
             products.Clear();
 
@@ -50,15 +63,25 @@ namespace ConsoleOnlineStore
             }
         }
         
-        public static List<Product> GetProduct()
+        public static List<Product> GetProducts()
         {
+            if (!File.Exists(PathProduct))
+            {
+                File.Create(PathProduct);
+            }
+            
             return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
         }
 
         public static void AddNewPurchaseHistory(List<ProductHistory> productHistories)
         {
+            if (!File.Exists(PathHistory))
+            {
+                File.Create(PathHistory);
+            }
+            
             List<ProductHistory> basketHistory = JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory))
-                               ?? new List<ProductHistory>();
+                                                 ?? new List<ProductHistory>();
 
             foreach (ProductHistory productHistory in productHistories)
             {
@@ -73,6 +96,11 @@ namespace ConsoleOnlineStore
 
         public static List<ProductHistory> GetPurchaseHistory()
         {
+            if (!File.Exists(PathHistory))
+            {
+                File.Create(PathHistory);
+            }
+            
             return JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory));
         }
     }

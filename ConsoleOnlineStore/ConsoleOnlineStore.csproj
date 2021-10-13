@@ -6,6 +6,10 @@
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath />
+    </PropertyGroup>
+
     <ItemGroup>
       <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
         <HintPath>..\..\..\Desktop\net45\Newtonsoft.Json.dll</HintPath>
@@ -28,12 +32,17 @@
     <ItemGroup>
       <None Remove="Goods.json" />
       <None Remove="Login&amp;Password.json" />
-      <Content Include="Login&amp;Password.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
       <None Remove="PurchaseHistory.json" />
       <Content Include="PurchaseHistory.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Users.json" />
+      <Content Include="Users.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <None Remove="Products.json" />
+      <Content Include="Products.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 

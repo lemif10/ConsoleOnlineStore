@@ -8,10 +8,10 @@ namespace ConsoleOnlineStore
 
         public AuthService()
         {
-            _users = JsonStorage.GetUser();
+            _users = JsonStorage.GetUsers();
         }
         
-        public bool Join(User user)
+        public bool Login(User user)
         {
             if (_users is null)
             {
@@ -20,39 +20,33 @@ namespace ConsoleOnlineStore
 
             foreach (User item in _users)
             {
-                if (item.Login == user.Login)
+                if (item.Login == user.Login && item.Password == user.Password)
                 {
-                    if (item.Password == user.Password)
-                    {
-                        user.Name = item.Name;
-                        PurchaseHistory.Login = item.Login;
-                        return true;
-                    }
-
-                    return false;
+                    user.Name = item.Name;
+                    PurchaseHistory.Login = item.Login;
+                    return true;
                 }
-
             }
 
             return false;
         }
-        
-        public bool NewUser(User user)
+
+        public bool AddNewUser(User user)
         {
             if (_users is null)
             {
-                return true;
+                return false;
             }
             
             foreach (User item in _users)
             {
                 if (item.Login == user.Login)
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }
