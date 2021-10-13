@@ -13,18 +13,17 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
-                {
-                    Console.Clear();
-                    DisplayLoginWindow();
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
-                    DisplayRegistrationWindow();
-                    break;
+                switch (key.Key)
+                { 
+                    case ConsoleKey.D1:
+                        Console.Clear();
+                        DisplayLoginWindow();
+                        break;
+                        
+                    case ConsoleKey.D2:
+                        Console.Clear();
+                        DisplayRegistrationWindow();
+                        break;
                 }
             }
         }
@@ -41,32 +40,27 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    Console.Clear();
-                    DisplayCatalog();
-                    break;
-                }
-                
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
-                    DisplayBasket();
-                    break;
-                }
-                
-                if (key.Key == ConsoleKey.D3)
-                {
-                    Console.Clear();
-                    DisplayPurchaseHistory();
-                    break;
-                }
-                
-                if (key.Key == ConsoleKey.D4)
-                {
-                    Console.Clear();
-                    DisplayAuthWindow();
-                    break;
+                    case ConsoleKey.D1:
+                        Console.Clear();
+                        DisplayCatalog();
+                        break;
+                    
+                    case ConsoleKey.D2:
+                        Console.Clear();
+                        DisplayBasket();
+                        break;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear();
+                        DisplayPurchaseHistory();
+                        break;
+                        
+                    case ConsoleKey.D4:
+                        Console.Clear();
+                        DisplayAuthWindow();
+                        break;
                 }
             }
         }
@@ -97,17 +91,17 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    Console.Clear();
-                    DisplayAddToBasket();
-                }
-                
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
-                    DisplayMainWindow();
-                    break;
+                    case ConsoleKey.D1:
+                        Console.Clear();
+                        DisplayAddToBasket();
+                        break;
+                        
+                    case ConsoleKey.D2:
+                        Console.Clear();
+                        DisplayMainWindow();
+                        break;
                 }
             }
         }
@@ -150,31 +144,29 @@ namespace ConsoleOnlineStore
             while (true) 
             { 
                 ConsoleKeyInfo key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.D1) 
-                { 
-                    Console.Clear();
-                    
-                    Basket.ProductsInBasket.Add(basket.Products[int.Parse(num ?? string.Empty) - 1]); 
-                    Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
 
-                    Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
+                switch (key.Key)
+                {
+                    case ConsoleKey.D1:
+                        Console.Clear();
                     
-                    DisplayCatalog();
-                    break;
-                }
-                
-                if (key.Key == ConsoleKey.D2) 
-                { 
-                    Console.Clear(); 
-                    DisplayAddToBasket();
-                    break;
-                }
-                
-                if (key.Key == ConsoleKey.D3) 
-                { 
-                    Console.Clear(); 
-                    DisplayCatalog(); 
-                    break;
+                        Basket.ProductsInBasket.Add(basket.Products[int.Parse(num ?? string.Empty) - 1]); 
+                        Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+
+                        Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
+                    
+                        DisplayCatalog();
+                        break;
+                    
+                    case ConsoleKey.D2:
+                        Console.Clear(); 
+                        DisplayAddToBasket();
+                        break;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear(); 
+                        DisplayCatalog(); 
+                        break;
                 }
             }
         }
@@ -204,58 +196,57 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    Console.Clear();
+                    case ConsoleKey.D1:
+                        Console.Clear();
 
-                    Console.WriteLine("Подтвердить покупку товара?\n" +
-                                      "1. Да.\n" +
-                                      "2. Нет");
+                        Console.WriteLine("Подтвердить покупку товара?\n" +
+                                          "1. Да.\n" +
+                                          "2. Нет");
 
-                    while (true)
-                    {
-                        ConsoleKeyInfo key2 = Console.ReadKey(true);
-
-                        if (key2.Key == ConsoleKey.D1)
+                        while (true)
                         {
-                            Console.Clear();
+                            ConsoleKeyInfo key2 = Console.ReadKey(true);
 
-                            Console.WriteLine("Поздравлем с успешной покупкой!\n");
+                            switch (key2.Key)
+                            {
+                                case ConsoleKey.D1:
+                                    Console.Clear();
+                                    
+                                    PurchaseHistory purchaseHistory = new();
 
-                            PurchaseHistory purchaseHistory = new();
-                            
-                            JsonStorage.NewProductsQuantity(basket.SoldQuantity());
-                            
-                            JsonStorage.AddNewPurchaseHistory(purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
-                            
-                            Basket.ProductsInBasket.Clear();
+                                    JsonStorage.NewProductsQuantity(basket.SoldQuantity());
 
-                            DisplayMainWindow();
+                                    JsonStorage.AddNewPurchaseHistory(
+                                        purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
+
+                                    Basket.ProductsInBasket.Clear();
+                                    
+                                    Console.WriteLine("Поздравлем с успешной покупкой!\n");
+
+                                    DisplayMainWindow();
+                                    break;
+                                
+                                case ConsoleKey.D2:
+                                    Console.Clear();
+                                    DisplayBasket();
+                                    break;
+                            }
                         }
-
-                        if (key2.Key == ConsoleKey.D2)
-                        {
-                            Console.Clear();
-                            DisplayBasket();
-                        }
-                    }
-                }
-                
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
+                        
+                    case ConsoleKey.D2:
+                        Console.Clear();
                     
-                    Basket.ProductsInBasket.Clear();
+                        Basket.ProductsInBasket.Clear();
                     
-                    DisplayBasket();
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D3)
-                {
-                    Console.Clear();
-                    DisplayMainWindow();
-                    break;
+                        DisplayBasket();
+                        break;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear();
+                        DisplayMainWindow();
+                        break;
                 }
             }
         }
@@ -284,11 +275,12 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    Console.Clear();
-                    DisplayMainWindow();
-                    break;
+                    case ConsoleKey.D1:
+                        Console.Clear();
+                        DisplayMainWindow();
+                        break;
                 }
             }
         }
@@ -336,35 +328,32 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    if (authService.AddNewUser(user))
-                    {
+                    case ConsoleKey.D1:
+                        if (authService.AddNewUser(user))
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Данный логин уже занят, попробуйте другой!\n");
+                            DisplayRegistrationWindow();
+                        }
+                    
+                        JsonStorage.AddNewUser(user);
+                    
                         Console.Clear();
-                        Console.WriteLine("Данный логин уже занят, попробуйте другой!\n");
+                        Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
+                        DisplayAuthWindow();
+                        break;
+                    
+                    case ConsoleKey.D2:
+                        Console.Clear();
                         DisplayRegistrationWindow();
-                    }
-                    
-                    JsonStorage.AddNewUser(user);
-                    
-                    Console.Clear();
-                    Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
-                    DisplayAuthWindow();
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
-                    DisplayRegistrationWindow();
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D3)
-                {
-                    Console.Clear();
-                    DisplayAuthWindow();
-                    break;
+                        break;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear();
+                        DisplayAuthWindow();
+                        break;
                 }
             }
         }
@@ -389,34 +378,31 @@ namespace ConsoleOnlineStore
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
-                if (key.Key == ConsoleKey.D1)
+                switch (key.Key)
                 {
-                    if (authService.Login(user))
-                    {
+                    case ConsoleKey.D1:
+                        if (authService.Login(user))
+                        {
+                            Console.Clear();
+                            Console.WriteLine($"Приветствуем {user.Name}!\n");
+                            DisplayMainWindow();
+                            break;
+                        }
+
                         Console.Clear();
-                        Console.WriteLine($"Приветствуем {user.Name}!\n");
-                        DisplayMainWindow();
+                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n");
+                        DisplayLoginWindow();
                         break;
-                    }
                     
-                    Console.Clear();
-                    Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n"); 
-                    DisplayLoginWindow(); 
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D2)
-                {
-                    Console.Clear();
-                    DisplayLoginWindow();
-                    break;
-                }
-
-                if (key.Key == ConsoleKey.D3)
-                {
-                    Console.Clear();
-                    DisplayAuthWindow();
-                    break;
+                    case ConsoleKey.D2:
+                        Console.Clear();
+                        DisplayLoginWindow();
+                        break;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear();
+                        DisplayAuthWindow();
+                        break;
                 }
             }
         }

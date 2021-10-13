@@ -11,14 +11,14 @@ namespace ConsoleOnlineStore
 
         public Basket()
         {
-            Products = JsonStorage.GetProduct();
+            Products = JsonStorage.GetProducts();
         }
         
         public bool AddToBasket(string index, string quantity)
         {
             if (int.TryParse(index, out int ind) && int.TryParse(quantity, out int quan))
             {
-                if (ind < 0 || ind >= Products.Count  || quan <= 0 ||
+                if (ind < 0 || ind > Products.Count  || quan <= 0 ||
                     quan > Products[ind - 1].Quantity)
                 {
                     return false;

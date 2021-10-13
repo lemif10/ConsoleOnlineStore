@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleOnlineStore
 {
@@ -17,46 +18,42 @@ namespace ConsoleOnlineStore
         {
             List<ProductHistory> productHistories = new List<ProductHistory>();
 
-            ProductHistory productHistory = new ProductHistory();
-
             foreach (Product product in productsInBasket)
             {
-                productHistory.Login = Login;
-                productHistory.Name = product.Name;
-                productHistory.Description = product.Description;
-                productHistory.Quantity = product.Quantity;
-                productHistory.Price = product.Price;
+                ProductHistory productHistory = new ProductHistory
+                {
+                    Login = Login,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Quantity = product.Quantity,
+                    Price = product.Price,
+                    Date = DateTime.Now.Date
+                };
+
                 productHistories.Add(productHistory);
             }
 
             return productHistories;
         }
 
-        public List<Product> SelectPurchaseHistory()
+        public List<ProductHistory> SelectPurchaseHistory()
         {
             if (_productHistories is null)
             {
-                return new List<Product>();
+                return new List<ProductHistory>();
             }
 
-            List<Product> products = new();
-
-            Product product = new();
-
+            List<ProductHistory> productHistories = new();
+            
             for (int i = _productHistories.Count - 1; i >= 0; i--)
             {
                 if (_productHistories[i].Login == Login)
                 {
-                    product.Name = _productHistories[i].Name;
-                    product.Description = _productHistories[i].Description;
-                    product.Quantity = _productHistories[i].Quantity;
-                    product.Price = _productHistories[i].Price;
-                    products.Add(product);
-                    product = new();
+                    productHistories.Add(_productHistories[i]);
                 }
             }
 
-            return products;
+            return productHistories;
         }
     }
 }
