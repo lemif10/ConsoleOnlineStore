@@ -1,25 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsoleOnlineStore
 {
     public class Basket
     {
-        public readonly List<Product> Products;
+        private static Timer _timer;
+
+        public readonly List<Product> products;
         
-        public static readonly List<Product> ProductsInBasket = new();
+        public static readonly List<Product> productsInBasket = new();
+        
+        private IConfiguration Configuration { get; }
 
         public Basket()
         {
-            Products = JsonStorage.GetProducts();
+            products = JsonStorage.GetProducts();
+
+            Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+        }
+
+        public void SetTimer()
+        {
+            _timer = new Timer(TimeOut, Configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(Configuration["Timer:StartAfterMinutes"])),
+                TimeSpan.FromSeconds(double.Parse(Configuration["Timer:Period"])));
+        }
+
+        private void TimeOut(object state)
+        {
+            Console.Write(state);
+            
+            productsInBasket.Clear();
+            
+            _timer.Dispose();
         }
         
         public bool AddToBasket(string index, string quantity)
         {
             if (int.TryParse(index, out int ind) && int.TryParse(quantity, out int quan))
             {
-                if (ind < 0 || ind > Products.Count  || quan <= 0 ||
-                    quan > Products[ind - 1].Quantity)
+                if (ind <= 0 || ind > products.Count  || quan <= 0 ||
+                    quan > products[ind - 1].Quantity)
                 {
                     return false;
                 }
@@ -32,13 +55,13 @@ namespace ConsoleOnlineStore
 
         public void PrintBasket()
         {
-            for (int i = 0; i < ProductsInBasket.Count; i++)
+            for (int i = 0; i < productsInBasket.Count; i++)
             {
                 Console.WriteLine($"Товар номер: {i + 1}");
-                Console.WriteLine($"Название: {ProductsInBasket[i].Name}");
-                Console.WriteLine($"Описание: {ProductsInBasket[i].Description}");
-                Console.WriteLine($"Количество: {ProductsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена: {ProductsInBasket[i].Price}");
+                Console.WriteLine($"Название: {productsInBasket[i].Name}");
+                Console.WriteLine($"Описание: {productsInBasket[i].Description}");
+                Console.WriteLine($"Количество: {productsInBasket[i].Quantity}");
+                Console.WriteLine($"Цена: {productsInBasket[i].Price}");
                 Console.WriteLine();
             }
         }
@@ -47,7 +70,7 @@ namespace ConsoleOnlineStore
         {
             decimal price = 0;
 
-            foreach (Product product in ProductsInBasket)
+            foreach (Product product in productsInBasket)
             {
                 price += product.Price * product.Quantity;
 
@@ -59,9 +82,9 @@ namespace ConsoleOnlineStore
 
         public List<Product> SoldQuantity()
         {
-            foreach (Product product in Products)
+            foreach (Product product in products)
             {
-                foreach (Product productInBasket in ProductsInBasket)
+                foreach (Product productInBasket in productsInBasket)
                 {
                     if (product.Name == productInBasket.Name)
                     {
@@ -70,7 +93,7 @@ namespace ConsoleOnlineStore
                 }
             }
 
-            return Products;
+            return products;
         }
     }
 }
