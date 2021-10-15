@@ -6,11 +6,11 @@ namespace ConsoleOnlineStore
 {
     public static class JsonStorage
     {
-        private static string PathUser { get;} = Path.Combine(Directory.GetCurrentDirectory(), "Users.json");
+        private static string PathUser {get;} = Path.Combine(Directory.GetCurrentDirectory(), "Users.json");
         
-        private static string PathProduct { get;} = Path.Combine(Directory.GetCurrentDirectory(), "Products.json");
+        private static string PathProduct {get;} = Path.Combine(Directory.GetCurrentDirectory(), "products.json");
 
-        private static string PathHistory { get;} = Path.Combine(Directory.GetCurrentDirectory(), "PurchaseHistory.json");
+        private static string PathHistory {get;} = Path.Combine(Directory.GetCurrentDirectory(), "PurchaseHistory.json");
         
         public static void AddNewUser(User user)
         {

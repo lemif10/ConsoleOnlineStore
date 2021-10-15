@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ConsoleOnlineStore
 {
@@ -47,6 +50,14 @@ namespace ConsoleOnlineStore
             }
 
             return false;
+        }
+
+        public string GetHash(string password)
+        {
+            MD5 md5 = MD5.Create();
+            byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(password));
+
+            return Convert.ToBase64String(hash);
         }
     }
 }
