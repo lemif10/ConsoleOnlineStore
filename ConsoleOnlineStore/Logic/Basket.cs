@@ -19,7 +19,7 @@ namespace ConsoleOnlineStore
         {
             products = JsonStorage.GetProducts();
 
-            Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            Configuration = new ConfigurationBuilder().AddJsonFile("Content/appsettings.json").Build();
         }
 
         public void SetTimer()
