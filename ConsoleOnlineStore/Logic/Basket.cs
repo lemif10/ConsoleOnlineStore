@@ -83,7 +83,7 @@ namespace ConsoleOnlineStore
                     {
                         price += product.Price * product.Quantity;
 
-                        productInBasket.Price = product.Quantity * product.Price;
+                        productInBasket.Price = productInBasket.Quantity * product.Price;
                     }
                 }
             }
