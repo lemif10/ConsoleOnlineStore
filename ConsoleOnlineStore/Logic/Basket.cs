@@ -9,7 +9,7 @@ namespace ConsoleOnlineStore
     {
         private static Timer _timer;
 
-        public readonly List<Product> products;
+        private readonly List<Product> _products;
         
         public static readonly List<Product> productsInBasket = new();
         
@@ -17,7 +17,7 @@ namespace ConsoleOnlineStore
 
         public Basket()
         {
-            products = JsonStorage.GetProducts();
+            _products = JsonStorage.GetProducts();
 
             Configuration = new ConfigurationBuilder().AddJsonFile("Content/appsettings.json").Build();
         }
@@ -41,8 +41,8 @@ namespace ConsoleOnlineStore
         {
             if (int.TryParse(index, out int ind) && int.TryParse(quantity, out int quan))
             {
-                if (ind <= 0 || ind > products.Count  || quan <= 0 ||
-                    quan > products[ind - 1].Quantity)
+                if (ind <= 0 || ind > _products.Count  || quan <= 0 ||
+                    quan > _products[ind - 1].Quantity)
                 {
                     return false;
                 }
@@ -82,7 +82,7 @@ namespace ConsoleOnlineStore
 
         public List<Product> SoldQuantity()
         {
-            foreach (Product product in products)
+            foreach (Product product in _products)
             {
                 foreach (Product productInBasket in productsInBasket)
                 {
@@ -93,7 +93,7 @@ namespace ConsoleOnlineStore
                 }
             }
 
-            return products;
+            return _products;
         }
     }
 }

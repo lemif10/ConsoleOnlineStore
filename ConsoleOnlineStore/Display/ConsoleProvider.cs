@@ -67,25 +67,18 @@ namespace ConsoleOnlineStore
 
         private static void DisplayCatalog()
         {
-            Console.WriteLine("1. Добавить предмет в корзину.\n" +
-                              "2. Выйти в меню\n");
+            Catalog catalog = new Catalog();
 
-            Basket basket = new Basket();
-            
-            for (int i = 0; i < basket.products.Count; i++)
-            {
-                Console.WriteLine($"Номер товара: {i + 1}");
-                Console.WriteLine($"Название: {basket.products[i].Name}");
-                Console.WriteLine($"Описание: {basket.products[i].Description}");
-                Console.WriteLine($"Количество: {basket.products[i].Quantity}");
-                Console.WriteLine($"Цена за штуку: {basket.products[i].Price}");
-                Console.WriteLine();
-            }
+            catalog.PrintCatalog();
 
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
-                              "2. Выйти в меню");
+                              "2. Следующая страница\n" +
+                              "3. Предыдущая страница\n" +
+                              "4. Выбрать страницу\n" +
+                              "5. Выйти в меню\n");
 
-            Console.SetCursorPosition(0, 0);
+            Console.WriteLine($"Текущая страница {Catalog.Page}," +
+                              $" последняя страница: {Math.Ceiling(catalog.products.Count / (Catalog.pagination * 1.0))}");
 
             while (true)
             {
@@ -97,8 +90,61 @@ namespace ConsoleOnlineStore
                         Console.Clear();
                         DisplayAddToBasket();
                         return;
-                        
+                    
                     case ConsoleKey.D2:
+                        Console.Clear();
+                        
+                        Catalog.Page++;
+                        
+                        if (Catalog.Page * Catalog.pagination - (Catalog.pagination - 1) > catalog.products.Count)
+                        {
+                            Console.WriteLine("Невозможно отобразить следующую страницу!\n");
+                            Catalog.Page--;
+                            DisplayCatalog();
+                        }
+                        
+                        DisplayCatalog();
+                        return;
+
+                    case ConsoleKey.D3:
+                        Console.Clear();
+                        
+                        Catalog.Page--;
+                        
+                        if (Catalog.Page < 1)
+                        {
+                            Console.WriteLine("Невозможно отобразить предыидущую страницу!\n");
+                            Catalog.Page++;
+                            DisplayCatalog();
+                        }
+                        
+                        DisplayCatalog();
+                        return;
+                        
+                    case ConsoleKey.D4:
+                        Console.Clear();
+
+                        Console.Write("Укажите страницу для перехода: ");
+                        if (int.TryParse(Console.ReadLine(), out int page))
+                        {
+                            Console.Clear();
+
+                            if (page < 1 || page * Catalog.pagination - (Catalog.pagination - 1) > catalog.products.Count)
+                            {
+                                Console.WriteLine("Невозможно отобразить выбранную страницу!\n");
+                                DisplayCatalog();
+                            }
+
+                            Catalog.Page = page;
+                            DisplayCatalog();
+                        }
+
+                        Console.Clear();
+                        Console.WriteLine("Вы неверно указали страницу, попробуйте ещё раз!\n");
+                        DisplayCatalog();
+                        return;
+
+                    case ConsoleKey.D5:
                         Console.Clear();
                         DisplayMainWindow();
                         return;
@@ -113,6 +159,7 @@ namespace ConsoleOnlineStore
             Console.Write("Укажите количество товара: ");
             string quantity = Console.ReadLine();
 
+            Catalog catalog = new Catalog();
             Basket basket = new Basket();
             
             if (num == "" || quantity == "" || num is null || quantity is null)
@@ -131,10 +178,10 @@ namespace ConsoleOnlineStore
             {
                 Console.Clear();
                 Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
-                Console.WriteLine($"Название: {basket.products[int.Parse(num) - 1].Name}"); 
-                Console.WriteLine($"Описание: {basket.products[int.Parse(num) - 1].Description}"); 
+                Console.WriteLine($"Название: {catalog.products[int.Parse(num) - 1].Name}"); 
+                Console.WriteLine($"Описание: {catalog.products[int.Parse(num) - 1].Description}"); 
                 Console.WriteLine($"Количество: {int.Parse(quantity)}");
-                Console.WriteLine($"Цена за штуку: {basket.products[int.Parse(num) - 1].Price}");
+                Console.WriteLine($"Цена за штуку: {catalog.products[int.Parse(num) - 1].Price}");
                 Console.WriteLine();
             }
 
@@ -155,7 +202,7 @@ namespace ConsoleOnlineStore
                             basket.SetTimer();
                         }
                         
-                        Basket.productsInBasket.Add(basket.products[int.Parse(num ?? string.Empty) - 1]); 
+                        Basket.productsInBasket.Add(catalog.products[int.Parse(num ?? string.Empty) - 1]); 
                         Basket.productsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
 
                         Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
@@ -417,6 +464,11 @@ namespace ConsoleOnlineStore
                         return;
                 }
             }
+        }
+
+        private static void DisplayFindWindow()
+        {
+            
         }
     }
 }
