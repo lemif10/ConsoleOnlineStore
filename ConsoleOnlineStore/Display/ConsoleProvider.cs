@@ -277,8 +277,9 @@ namespace ConsoleOnlineStore
 
                                     JsonStorage.AddNewPurchaseHistory(
                                         purchaseHistory.MakePurchaseHistory(Basket.productsInBasket));
-
+                                    
                                     Basket.productsInBasket.Clear();
+                                    basket.DisposeTimer();
                                     
                                     Console.WriteLine("Поздравлем с успешной покупкой!\n");
 

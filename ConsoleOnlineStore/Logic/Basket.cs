@@ -36,6 +36,11 @@ namespace ConsoleOnlineStore
             
             _timer.Dispose();
         }
+
+        public void DisposeTimer()
+        {
+            _timer.Dispose();
+        }
         
         public bool AddToBasket(string index, string quantity)
         {
@@ -61,7 +66,7 @@ namespace ConsoleOnlineStore
                 Console.WriteLine($"Название: {productsInBasket[i].Name}");
                 Console.WriteLine($"Описание: {productsInBasket[i].Description}");
                 Console.WriteLine($"Количество: {productsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена: {productsInBasket[i].Price}");
+                Console.WriteLine($"Цена за весь товар: {productsInBasket[i].Price}");
                 Console.WriteLine();
             }
         }
@@ -70,12 +75,19 @@ namespace ConsoleOnlineStore
         {
             decimal price = 0;
 
-            foreach (Product product in productsInBasket)
+            foreach (Product product in _products)
             {
-                price += product.Price * product.Quantity;
+                foreach (Product productInBasket in productsInBasket)
+                {
+                    if (productInBasket.Name == product.Name)
+                    {
+                        price += product.Price * product.Quantity;
 
-                product.Price *= product.Quantity;
+                        productInBasket.Price = product.Quantity * product.Price;
+                    }
+                }
             }
+
 
             return price;
         }
