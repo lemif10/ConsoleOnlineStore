@@ -12,20 +12,20 @@ namespace ConsoleOnlineStore
         private readonly List<Product> _products;
         
         public static readonly List<Product> productsInBasket = new();
-        
-        private IConfiguration Configuration { get; }
+
+        private readonly IConfiguration _configuration;
 
         public Basket()
         {
             _products = JsonStorage.GetProducts();
 
-            Configuration = new ConfigurationBuilder().AddJsonFile("Content/appsettings.json").Build();
+            _configuration = new ConfigurationBuilder().AddJsonFile("Content/appsettings.json").Build();
         }
 
         public void SetTimer()
         {
-            _timer = new Timer(TimeOut, Configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(Configuration["Timer:StartAfterMinutes"])),
-                TimeSpan.FromSeconds(double.Parse(Configuration["Timer:Period"])));
+            _timer = new Timer(TimeOut, _configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(_configuration["Timer:StartAfterMinutes"])),
+                TimeSpan.FromSeconds(double.Parse(_configuration["Timer:Period"])));
         }
 
         private void TimeOut(object state)
@@ -81,14 +81,13 @@ namespace ConsoleOnlineStore
                 {
                     if (productInBasket.Name == product.Name)
                     {
-                        price += product.Price * product.Quantity;
+                        price += product.Price * productInBasket.Quantity;
 
-                        productInBasket.Price = productInBasket.Quantity * product.Price;
+                        productInBasket.Price = product.Price * productInBasket.Quantity;
                     }
                 }
             }
-
-
+            
             return price;
         }
 

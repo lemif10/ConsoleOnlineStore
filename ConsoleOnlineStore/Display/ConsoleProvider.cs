@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Channels;
 
 namespace ConsoleOnlineStore
 {
@@ -31,10 +32,11 @@ namespace ConsoleOnlineStore
         private static void DisplayMainWindow()
         {
             Console.WriteLine(
-                    "1. Посмотреть каталог\n" +
+                    "1. Посмотреть каталог.\n" +
                     "2. Посмотреть корзину.\n" +
-                    "3. Посмотреть историю покупок\n" +
-                    "4. Выйти из аккаунта");
+                    "3. Поиск товара по названию.\n" +
+                    "4. Посмотреть историю покупок.\n" +
+                    "5. Выйти из аккаунта");
 
             while (true)
             {
@@ -54,10 +56,15 @@ namespace ConsoleOnlineStore
                         
                     case ConsoleKey.D3:
                         Console.Clear();
-                        DisplayPurchaseHistory();
+                        DisplayFindWindow();
                         return;
                         
                     case ConsoleKey.D4:
+                        Console.Clear();
+                        DisplayPurchaseHistory();
+                        return;
+                    
+                    case ConsoleKey.D5:
                         Console.Clear();
                         DisplayAuthWindow();
                         return;
@@ -78,7 +85,7 @@ namespace ConsoleOnlineStore
                               "5. Выйти в меню\n");
 
             Console.WriteLine($"Текущая страница {Catalog.Page}," +
-                              $" последняя страница: {Math.Ceiling(catalog.products.Count / (Catalog.pagination * 1.0))}");
+                              $" последняя страница: {Math.Ceiling(catalog.Products.Count / (Catalog.pagination * 1.0))}");
 
             while (true)
             {
@@ -96,7 +103,7 @@ namespace ConsoleOnlineStore
                         
                         Catalog.Page++;
                         
-                        if (Catalog.Page * Catalog.pagination - (Catalog.pagination - 1) > catalog.products.Count)
+                        if (Catalog.Page * Catalog.pagination - (Catalog.pagination - 1) > catalog.Products.Count)
                         {
                             Console.WriteLine("Невозможно отобразить следующую страницу!\n");
                             Catalog.Page--;
@@ -129,7 +136,7 @@ namespace ConsoleOnlineStore
                         {
                             Console.Clear();
 
-                            if (page < 1 || page * Catalog.pagination - (Catalog.pagination - 1) > catalog.products.Count)
+                            if (page < 1 || page * Catalog.pagination - (Catalog.pagination - 1) > catalog.Products.Count)
                             {
                                 Console.WriteLine("Невозможно отобразить выбранную страницу!\n");
                                 DisplayCatalog();
@@ -178,10 +185,10 @@ namespace ConsoleOnlineStore
             {
                 Console.Clear();
                 Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
-                Console.WriteLine($"Название: {catalog.products[int.Parse(num) - 1].Name}"); 
-                Console.WriteLine($"Описание: {catalog.products[int.Parse(num) - 1].Description}"); 
+                Console.WriteLine($"Название: {catalog.Products[int.Parse(num) - 1].Name}"); 
+                Console.WriteLine($"Описание: {catalog.Products[int.Parse(num) - 1].Description}"); 
                 Console.WriteLine($"Количество: {int.Parse(quantity)}");
-                Console.WriteLine($"Цена за штуку: {catalog.products[int.Parse(num) - 1].Price}");
+                Console.WriteLine($"Цена за штуку: {catalog.Products[int.Parse(num) - 1].Price}");
                 Console.WriteLine();
             }
 
@@ -202,7 +209,7 @@ namespace ConsoleOnlineStore
                             basket.SetTimer();
                         }
                         
-                        Basket.productsInBasket.Add(catalog.products[int.Parse(num ?? string.Empty) - 1]); 
+                        Basket.productsInBasket.Add(catalog.Products[int.Parse(num ?? string.Empty) - 1]); 
                         Basket.productsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
 
                         Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
@@ -469,7 +476,77 @@ namespace ConsoleOnlineStore
 
         private static void DisplayFindWindow()
         {
+            Console.Write("Укажите название товара: ");
+            string productName = Console.ReadLine();
+
+            Catalog catalog = new Catalog();
+
+            int productIndex = catalog.FindProduct(productName);
+
+            if (productIndex != -1)
+            {
+                Console.WriteLine($"Название: {catalog.Products[productIndex].Name}");
+                Console.WriteLine($"Описание: {catalog.Products[productIndex].Description}");
+                Console.WriteLine($"Количество: {catalog.Products[productIndex].Quantity}");
+                Console.WriteLine($"Цена за штуку: {catalog.Products[productIndex].Price}\n");
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Мы не смогли найти товар который вы искали, нужно полное совпадение названия товара!\n");
+                DisplayMainWindow();
+            }
+
+            Basket basket = new Basket();
             
+            Console.Write("Укажите количество товара: ");
+            string quantity = Console.ReadLine();
+            
+            if (!basket.AddToBasket((productIndex + 1).ToString(), quantity))
+            {
+                Console.Clear(); 
+                Console.WriteLine("Вы указали неверное количество товара! Попробуйте ещё раз!\n"); 
+                DisplayMainWindow();
+            }
+
+            Console.WriteLine("Добавить товар в корзину?");
+
+            Console.WriteLine("1. Добавить товар в корзину.\n" +
+                              "2. Найти другой товар\n" +
+                              "3. Вернуться в главное меню.");
+            while (true) 
+            { 
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.D1:
+                        Console.Clear();
+
+                        if (Basket.productsInBasket.Count == 0)
+                        {
+                            basket.SetTimer();
+                        }
+                        
+                        Basket.productsInBasket.Add(catalog.Products[productIndex]); 
+                        Basket.productsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+
+                        Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
+                    
+                        DisplayMainWindow();
+                        return;
+                    
+                    case ConsoleKey.D2:
+                        Console.Clear(); 
+                        DisplayFindWindow();
+                        return;
+                        
+                    case ConsoleKey.D3:
+                        Console.Clear(); 
+                        DisplayMainWindow(); 
+                        return;
+                }
+            }
         }
     }
 }
