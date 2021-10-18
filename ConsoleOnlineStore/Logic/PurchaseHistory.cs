@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ConsoleOnlineStore.Models;
+using ConsoleOnlineStore.Services;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Logic
 {
     public class PurchaseHistory
     {

@@ -1,4 +1,4 @@
-﻿namespace ConsoleOnlineStore
+﻿namespace ConsoleOnlineStore.Models
 {
     public class User
     {

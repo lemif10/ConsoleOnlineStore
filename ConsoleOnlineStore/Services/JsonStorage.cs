@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using ConsoleOnlineStore.Models;
 using Newtonsoft.Json;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Services
 {
     public static class JsonStorage
     {
@@ -40,7 +41,7 @@ namespace ConsoleOnlineStore
             return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathUser));
         }
 
-        public static void NewProductsQuantity(List<Product> newQuantity)
+        public static void ChangeProductsQuantity(List<Product> newQuantity)
         {
             if (!File.Exists(PathProduct))
             {

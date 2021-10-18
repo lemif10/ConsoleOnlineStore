@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using ConsoleOnlineStore.Models;
+using ConsoleOnlineStore.Provider;
+using ConsoleOnlineStore.Services;
 using Microsoft.Extensions.Configuration;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Logic
 {
     public class Basket
     {
         private static Timer _timer;
 
+        private static int _seconds;
+
         private readonly List<Product> _products;
         
-        public static readonly List<Product> productsInBasket = new();
+        public static readonly List<Product> ProductsInBasket = new();
 
         private readonly IConfiguration _configuration;
 
@@ -24,22 +29,32 @@ namespace ConsoleOnlineStore
 
         public void SetTimer()
         {
-            _timer = new Timer(TimeOut, _configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(_configuration["Timer:StartAfterMinutes"])),
-                TimeSpan.FromSeconds(double.Parse(_configuration["Timer:Period"])));
+            _timer = new Timer(GetTime, _configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(_configuration["Timer:StartAfterMinutes"])),
+                TimeSpan.FromSeconds(double.Parse(_configuration["Timer:PeriodSeconds"])));
+
+            _seconds = int.Parse(_configuration["Timer:TimeOutAfterSeconds"]);
         }
 
-        private void TimeOut(object state)
+        private void GetTime(object state)
         {
-            Console.Write(state);
+            if (_seconds == 0)
+            {
+                ConsoleProvider.SetTitleName();
+                Console.WriteLine("\nВремя ожидания покупки вышло, ваша корзина пуста!");
+                ResetBasket();
+                return;
+            }
             
-            productsInBasket.Clear();
-            
-            _timer.Dispose();
+            Console.Title = $"{state}{_seconds / 60}:{_seconds % 60}";
+
+            _seconds--;
         }
 
-        public void DisposeTimer()
+        public void ResetBasket()
         {
+            ProductsInBasket.Clear();
             _timer.Dispose();
+            Console.Title = "OnlineStore";
         }
         
         public bool AddToBasket(string index, string quantity)
@@ -60,13 +75,13 @@ namespace ConsoleOnlineStore
 
         public void PrintBasket()
         {
-            for (int i = 0; i < productsInBasket.Count; i++)
+            for (int i = 0; i < ProductsInBasket.Count; i++)
             {
                 Console.WriteLine($"Товар номер: {i + 1}");
-                Console.WriteLine($"Название: {productsInBasket[i].Name}");
-                Console.WriteLine($"Описание: {productsInBasket[i].Description}");
-                Console.WriteLine($"Количество: {productsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена за весь товар: {productsInBasket[i].Price}");
+                Console.WriteLine($"Название: {ProductsInBasket[i].Name}");
+                Console.WriteLine($"Описание: {ProductsInBasket[i].Description}");
+                Console.WriteLine($"Количество: {ProductsInBasket[i].Quantity}");
+                Console.WriteLine($"Цена за весь товар: {ProductsInBasket[i].Price}");
                 Console.WriteLine();
             }
         }
@@ -77,7 +92,7 @@ namespace ConsoleOnlineStore
 
             foreach (Product product in _products)
             {
-                foreach (Product productInBasket in productsInBasket)
+                foreach (Product productInBasket in ProductsInBasket)
                 {
                     if (productInBasket.Name == product.Name)
                     {
@@ -95,7 +110,7 @@ namespace ConsoleOnlineStore
         {
             foreach (Product product in _products)
             {
-                foreach (Product productInBasket in productsInBasket)
+                foreach (Product productInBasket in ProductsInBasket)
                 {
                     if (product.Name == productInBasket.Name)
                     {

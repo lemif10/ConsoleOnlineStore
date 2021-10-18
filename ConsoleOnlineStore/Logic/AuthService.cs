@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using ConsoleOnlineStore.Models;
+using ConsoleOnlineStore.Services;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Logic
 {
     public class AuthService
     {

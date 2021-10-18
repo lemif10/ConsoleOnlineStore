@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Models
 {
     public class ProductHistory
     {

@@ -1,10 +1,17 @@
 ﻿using System;
-using System.Threading.Channels;
+using ConsoleOnlineStore.Logic;
+using ConsoleOnlineStore.Models;
+using ConsoleOnlineStore.Services;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Provider
 {
     public static class ConsoleProvider
     {
+        public static void SetTitleName()
+        {
+            Console.Title = "OnlineStore";
+        }
+        
         public static void DisplayAuthWindow()
         {
             Console.WriteLine("1. Войти в свой аккаунт\n" +
@@ -204,13 +211,13 @@ namespace ConsoleOnlineStore
                     case ConsoleKey.D1:
                         Console.Clear();
 
-                        if (Basket.productsInBasket.Count == 0)
+                        if (Basket.ProductsInBasket.Count == 0)
                         {
                             basket.SetTimer();
                         }
                         
-                        Basket.productsInBasket.Add(catalog.Products[int.Parse(num ?? string.Empty) - 1]); 
-                        Basket.productsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+                        Basket.ProductsInBasket.Add(catalog.Products[int.Parse(num ?? string.Empty) - 1]);
+                        Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
 
                         Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
                     
@@ -232,15 +239,11 @@ namespace ConsoleOnlineStore
         
         private static void DisplayBasket()
         {
-            Console.WriteLine("1. Произвести покупку\n" +
-                              "2. Очистить корзину\n" +
-                              "3. Покинуть корзину\n");
-
             Basket basket = new Basket();
             
             Console.WriteLine($"К оплате за все товары: {basket.ProductPrice()}\n");
             
-            if (Basket.productsInBasket.Count == 0)
+            if (Basket.ProductsInBasket.Count == 0)
             {
                 Console.WriteLine("Ваша корзина пуста!");
             }
@@ -248,6 +251,10 @@ namespace ConsoleOnlineStore
             {
                 basket.PrintBasket();
             }
+
+            Console.WriteLine("1. Произвести покупку\n" +
+                              "2. Очистить корзину\n" +
+                              "3. Покинуть корзину");
             
             while (true)
             {
@@ -271,7 +278,7 @@ namespace ConsoleOnlineStore
                                 case ConsoleKey.D1:
                                     Console.Clear();
                                     
-                                    if (Basket.productsInBasket.Count == 0)
+                                    if (Basket.ProductsInBasket.Count == 0)
                                     {
                                         Console.WriteLine("Ваша корзина пуста, вы не можете провести оплату!");
                                         
@@ -280,13 +287,12 @@ namespace ConsoleOnlineStore
                                     
                                     PurchaseHistory purchaseHistory = new();
 
-                                    JsonStorage.NewProductsQuantity(basket.SoldQuantity());
+                                    JsonStorage.ChangeProductsQuantity(basket.SoldQuantity());
 
                                     JsonStorage.AddNewPurchaseHistory(
-                                        purchaseHistory.MakePurchaseHistory(Basket.productsInBasket));
+                                        purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
                                     
-                                    Basket.productsInBasket.Clear();
-                                    basket.DisposeTimer();
+                                    basket.ResetBasket();
                                     
                                     Console.WriteLine("Поздравлем с успешной покупкой!\n");
 
@@ -303,7 +309,7 @@ namespace ConsoleOnlineStore
                     case ConsoleKey.D2:
                         Console.Clear();
                     
-                        Basket.productsInBasket.Clear();
+                        basket.ResetBasket();
                     
                         DisplayBasket();
                         return;
@@ -523,13 +529,13 @@ namespace ConsoleOnlineStore
                     case ConsoleKey.D1:
                         Console.Clear();
 
-                        if (Basket.productsInBasket.Count == 0)
+                        if (Basket.ProductsInBasket.Count == 0)
                         {
                             basket.SetTimer();
                         }
                         
-                        Basket.productsInBasket.Add(catalog.Products[productIndex]); 
-                        Basket.productsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+                        Basket.ProductsInBasket.Add(catalog.Products[productIndex]); 
+                        Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
 
                         Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
                     
