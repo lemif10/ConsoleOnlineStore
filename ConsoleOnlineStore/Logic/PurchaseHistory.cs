@@ -9,11 +9,11 @@ namespace ConsoleOnlineStore.Logic
     {
         public static string Login { get; set; }
 
-        private readonly List<ProductHistory> _productHistories;
+        public readonly List<ProductHistory> ProductHistories;
 
         public PurchaseHistory()
         {
-            _productHistories = JsonStorage.GetPurchaseHistory();
+            ProductHistories = JsonStorage.GetPurchaseHistory();
         }
         
         public List<ProductHistory> MakePurchaseHistory(List<Product> productsInBasket)
@@ -38,24 +38,19 @@ namespace ConsoleOnlineStore.Logic
             return productHistories;
         }
 
-        public List<ProductHistory> SelectPurchaseHistory()
+        public void PrintPurchaseHistory()
         {
-            if (_productHistories is null)
+            for (int i = ProductHistories.Count - 1; i >= 0; i--)
             {
-                return new List<ProductHistory>();
-            }
-
-            List<ProductHistory> productHistories = new();
-            
-            for (int i = _productHistories.Count - 1; i >= 0; i--)
-            {
-                if (_productHistories[i].Login == Login)
+                if (ProductHistories[i].Login == Login)
                 {
-                    productHistories.Add(_productHistories[i]);
+                    Console.WriteLine($"Название: {ProductHistories[i].Name}");
+                    Console.WriteLine($"Описание: {ProductHistories[i].Description}");
+                    Console.WriteLine($"Количество: {ProductHistories[i].Quantity}");
+                    Console.WriteLine($"Цена покупки: {ProductHistories[i].Price}");
+                    Console.WriteLine($"Дата покупки: {ProductHistories[i].Date.ToShortDateString()}\n");
                 }
             }
-
-            return productHistories;
         }
     }
 }

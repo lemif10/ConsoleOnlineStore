@@ -10,7 +10,7 @@ namespace ConsoleOnlineStore.Logic
 {
     public class AuthService
     {
-        public const int MinLenght = 3;
+        public const int MinLenght = 4;
         
         private readonly List<User> _users;
 
@@ -62,15 +62,23 @@ namespace ConsoleOnlineStore.Logic
             string securePwd = String.Empty;
             ConsoleKeyInfo key;
             
-            do 
+            while(true) 
             {
                 key = Console.ReadKey(true);
 
+                if (key.Key is ConsoleKey.Backspace or ConsoleKey.Spacebar or ConsoleKey.Delete)
+                {
+                    continue;
+                }
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+                
                 securePwd += key.KeyChar;
                 Console.Write("*");
-            } 
-            
-            while (key.Key != ConsoleKey.Enter);
+            }
 
             Console.WriteLine();
 

@@ -326,17 +326,17 @@ namespace ConsoleOnlineStore.Provider
         {
             Console.WriteLine("1. Покинуть историю покупок\n");
             
-            PurchaseHistory purchaseHistory = new();
+            PurchaseHistory purchaseHistory = new PurchaseHistory();
 
-            foreach (ProductHistory product in purchaseHistory.SelectPurchaseHistory())
+            if (purchaseHistory.ProductHistories is null)
             {
-                Console.WriteLine($"Название: {product.Name}");
-                Console.WriteLine($"Описание: {product.Description}");
-                Console.WriteLine($"Количество: {product.Quantity}");
-                Console.WriteLine($"Цена покупки: {product.Price}");
-                Console.WriteLine($"Дата покупки: {product.Date.ToShortDateString()}\n");
+                Console.Clear();
+                Console.WriteLine("Ваша история покупок пока что пуста, купите что-то и заходите!\n");
+                DisplayMainWindow();
             }
-
+            
+            purchaseHistory.PrintPurchaseHistory();
+            
             Console.WriteLine("1. Покинуть историю покупок");
 
             Console.SetCursorPosition(0, 0);
@@ -366,18 +366,20 @@ namespace ConsoleOnlineStore.Provider
             Console.Write("Укажите ваш логин: ");
             user.Login = Console.ReadLine();
             
-            if (user.Login?.Length <= AuthService.MinLenght)
+            if (user.Login?.Length < AuthService.MinLenght)
             {
-                Console.WriteLine("Вы указали слишком короткий логин, попробуйте ещё раз!");
+                Console.Clear();
+                Console.WriteLine($"Вы указали слишком короткий логин, минимальная длинна - {AuthService.MinLenght}, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
 
             Console.Write("Укажите ваш пароль: ");
             user.Password = authService.SecurePassword();
             
-            if (user.Password?.Length <= AuthService.MinLenght)
+            if (user.Password?.Length < AuthService.MinLenght)
             {
-                Console.WriteLine("Вы указали слишком короткий пароль, попробуйте ещё раз!\n");
+                Console.Clear();
+                Console.WriteLine($"Вы указали слишком короткий пароль, минимальная длинна - {AuthService.MinLenght}, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
 
@@ -386,6 +388,7 @@ namespace ConsoleOnlineStore.Provider
 
             if (user.Password != repeatPassword)
             {
+                Console.Clear();
                 Console.WriteLine("Вы неверно повторили пароль, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
@@ -494,7 +497,7 @@ namespace ConsoleOnlineStore.Provider
 
             if (productIndex != -1)
             {
-                Console.WriteLine($"Название: {catalog.Products[productIndex].Name}");
+                Console.WriteLine($"\nНазвание: {catalog.Products[productIndex].Name}");
                 Console.WriteLine($"Описание: {catalog.Products[productIndex].Description}");
                 Console.WriteLine($"Количество: {catalog.Products[productIndex].Quantity}");
                 Console.WriteLine($"Цена за штуку: {catalog.Products[productIndex].Price}\n");
@@ -517,10 +520,8 @@ namespace ConsoleOnlineStore.Provider
                 Console.WriteLine("Вы указали неверное количество товара! Попробуйте ещё раз!\n"); 
                 DisplayMainWindow();
             }
-
-            Console.WriteLine("Добавить товар в корзину?");
-
-            Console.WriteLine("1. Добавить товар в корзину.\n" +
+            
+            Console.WriteLine("1. \nДобавить товар в корзину.\n" +
                               "2. Найти другой товар\n" +
                               "3. Вернуться в главное меню.");
             while (true) 
