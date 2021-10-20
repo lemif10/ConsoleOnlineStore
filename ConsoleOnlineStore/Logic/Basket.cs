@@ -45,7 +45,7 @@ namespace ConsoleOnlineStore.Logic
                 return;
             }
             
-            Console.Title = $"{state}{_seconds / 60}:{_seconds % 60}";
+            Console.Title = $"{state}{_seconds / 60:D2}:{_seconds % 60:D2}";
 
             _seconds--;
         }
