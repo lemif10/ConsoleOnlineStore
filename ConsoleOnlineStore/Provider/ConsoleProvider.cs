@@ -92,7 +92,7 @@ namespace ConsoleOnlineStore.Provider
                               "5. Выйти в меню\n");
 
             Console.WriteLine($"Текущая страница {Catalog.Page}," +
-                              $" последняя страница: {Math.Ceiling(catalog.Products.Count / (Catalog.pagination * 1.0))}");
+                              $" последняя страница: {Math.Ceiling(catalog.Products.Count / (Catalog.Pagination * 1.0))}");
 
             while (true)
             {
@@ -110,7 +110,7 @@ namespace ConsoleOnlineStore.Provider
                         
                         Catalog.Page++;
                         
-                        if (Catalog.Page * Catalog.pagination - (Catalog.pagination - 1) > catalog.Products.Count)
+                        if (Catalog.Page * Catalog.Pagination - (Catalog.Pagination - 1) > catalog.Products.Count)
                         {
                             Console.WriteLine("Невозможно отобразить следующую страницу!\n");
                             Catalog.Page--;
@@ -143,7 +143,7 @@ namespace ConsoleOnlineStore.Provider
                         {
                             Console.Clear();
 
-                            if (page < 1 || page * Catalog.pagination - (Catalog.pagination - 1) > catalog.Products.Count)
+                            if (page < 1 || page * Catalog.Pagination - (Catalog.Pagination - 1) > catalog.Products.Count)
                             {
                                 Console.WriteLine("Невозможно отобразить выбранную страницу!\n");
                                 DisplayCatalog();
@@ -245,7 +245,7 @@ namespace ConsoleOnlineStore.Provider
             
             if (Basket.ProductsInBasket.Count == 0)
             {
-                Console.WriteLine("Ваша корзина пуста!");
+                Console.WriteLine("Ваша корзина пуста!\n");
             }
             else
             {
@@ -280,7 +280,7 @@ namespace ConsoleOnlineStore.Provider
                                     
                                     if (Basket.ProductsInBasket.Count == 0)
                                     {
-                                        Console.WriteLine("Ваша корзина пуста, вы не можете провести оплату!");
+                                        Console.WriteLine("Ваша корзина пуста, вы не можете провести оплату!\n");
                                         
                                         DisplayBasket();
                                     }
@@ -334,11 +334,12 @@ namespace ConsoleOnlineStore.Provider
                 Console.WriteLine($"Описание: {product.Description}");
                 Console.WriteLine($"Количество: {product.Quantity}");
                 Console.WriteLine($"Цена покупки: {product.Price}");
-                Console.WriteLine($"Дата покупки: {product.Date.ToShortDateString()}");
-                Console.WriteLine();
+                Console.WriteLine($"Дата покупки: {product.Date.ToShortDateString()}\n");
             }
 
             Console.WriteLine("1. Покинуть историю покупок");
+
+            Console.SetCursorPosition(0, 0);
 
             while (true)
             {
@@ -365,30 +366,33 @@ namespace ConsoleOnlineStore.Provider
             Console.Write("Укажите ваш логин: ");
             user.Login = Console.ReadLine();
             
-            if (user.Login?.Length <= 2)
+            if (user.Login?.Length <= AuthService.MinLenght)
             {
                 Console.WriteLine("Вы указали слишком короткий логин, попробуйте ещё раз!");
                 DisplayRegistrationWindow();
             }
-            
+
             Console.Write("Укажите ваш пароль: ");
-            user.Password = Console.ReadLine();
+            user.Password = authService.SecurePassword();
             
-            if (user.Password?.Length <= 3)
+            if (user.Password?.Length <= AuthService.MinLenght)
             {
-                Console.WriteLine("Вы указали слишком короткий пароль, попробуйте ещё раз!");
+                Console.WriteLine("Вы указали слишком короткий пароль, попробуйте ещё раз!\n");
+                DisplayRegistrationWindow();
+            }
+
+            Console.Write("Повторно введите пароль: ");
+            string repeatPassword = authService.SecurePassword();
+
+            if (user.Password != repeatPassword)
+            {
+                Console.WriteLine("Вы неверно повторили пароль, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
             
             Console.Write("Укажите ваше имя: ");
             user.Name = Console.ReadLine();
-            
-            if (user.Name?.Length <= 1)
-            {
-                Console.WriteLine("Вы указали слишком короткое имя, попробуйте ещё раз!");
-                DisplayRegistrationWindow();
-            }
-            
+
             Console.WriteLine("\n1. Подтвердить регистрацию.\n" +
                               "2. Пройти регистрацию заново.\n" +
                               "3. Покинуть окно регистрации");
@@ -439,7 +443,7 @@ namespace ConsoleOnlineStore.Provider
             user.Login = Console.ReadLine();
             
             Console.Write("Введите пароль: ");
-            user.Password = Console.ReadLine();
+            user.Password = authService.SecurePassword();
 
             Console.WriteLine("\n1. Подтвердить вход.\n" +
                               "2. Указать другой логин или пароль.\n" +
@@ -452,18 +456,17 @@ namespace ConsoleOnlineStore.Provider
                 switch (key.Key)
                 {
                     case ConsoleKey.D1:
-
+                        Console.Clear();
+                        
                         user.Password = authService.GetHash(user.Password);
                         
                         if (authService.Login(user))
                         {
-                            Console.Clear();
                             Console.WriteLine($"Приветствуем {user.Name}!\n");
                             DisplayMainWindow();
                         }
-
-                        Console.Clear();
-                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n");
+                        
+                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!");
                         DisplayLoginWindow();
                         return;
                     

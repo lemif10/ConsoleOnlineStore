@@ -15,10 +15,10 @@ namespace ConsoleOnlineStore.Logic
         private static int _seconds;
 
         private readonly List<Product> _products;
-        
-        public static readonly List<Product> ProductsInBasket = new();
 
         private readonly IConfiguration _configuration;
+        
+        public static readonly List<Product> ProductsInBasket = new();
 
         public Basket()
         {
@@ -54,7 +54,7 @@ namespace ConsoleOnlineStore.Logic
         {
             ProductsInBasket.Clear();
             _timer.Dispose();
-            Console.Title = "OnlineStore";
+            ConsoleProvider.SetTitleName();
         }
         
         public bool AddToBasket(string index, string quantity)
@@ -81,8 +81,7 @@ namespace ConsoleOnlineStore.Logic
                 Console.WriteLine($"Название: {ProductsInBasket[i].Name}");
                 Console.WriteLine($"Описание: {ProductsInBasket[i].Description}");
                 Console.WriteLine($"Количество: {ProductsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена за весь товар: {ProductsInBasket[i].Price}");
-                Console.WriteLine();
+                Console.WriteLine($"Цена за весь товар: {ProductsInBasket[i].Price}\n");
             }
         }
         

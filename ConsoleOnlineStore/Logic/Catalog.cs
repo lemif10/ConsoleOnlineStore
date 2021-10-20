@@ -7,7 +7,7 @@ namespace ConsoleOnlineStore.Logic
 {
     public class Catalog
     {
-        public const int pagination = 3;
+        public const int Pagination = 3;
         public readonly List<Product> Products;
 
         public static int Page { get; set; } = 1;
@@ -19,13 +19,12 @@ namespace ConsoleOnlineStore.Logic
         
         public void PrintCatalog()
         {
-            for (int i = (Page - 1) * pagination; i < Page * pagination && i < Products.Count; i++)
+            for (int i = (Page - 1) * Pagination; i < Page * Pagination && i < Products.Count; i++)
             {   Console.WriteLine($"Номер товара: {i + 1}"); 
                 Console.WriteLine($"Название: {Products[i].Name}"); 
                 Console.WriteLine($"Описание: {Products[i].Description}"); 
                 Console.WriteLine($"Количество: {Products[i].Quantity}"); 
-                Console.WriteLine($"Цена за штуку: {Products[i].Price}"); 
-                Console.WriteLine();
+                Console.WriteLine($"Цена за штуку: {Products[i].Price}\n");
             }
         }
 

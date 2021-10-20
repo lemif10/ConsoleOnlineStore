@@ -4,11 +4,14 @@ using System.Security.Cryptography;
 using System.Text;
 using ConsoleOnlineStore.Models;
 using ConsoleOnlineStore.Services;
+using System.Security;
 
 namespace ConsoleOnlineStore.Logic
 {
     public class AuthService
     {
+        public const int MinLenght = 3;
+        
         private readonly List<User> _users;
 
         public AuthService()
@@ -54,6 +57,26 @@ namespace ConsoleOnlineStore.Logic
             return false;
         }
 
+        public string SecurePassword()
+        {
+            string securePwd = String.Empty;
+            ConsoleKeyInfo key;
+            
+            do 
+            {
+                key = Console.ReadKey(true);
+
+                securePwd += key.KeyChar;
+                Console.Write("*");
+            } 
+            
+            while (key.Key != ConsoleKey.Enter);
+
+            Console.WriteLine();
+
+            return securePwd.Trim();
+        }
+        
         public string GetHash(string password)
         {
             MD5 md5 = MD5.Create();
@@ -61,5 +84,6 @@ namespace ConsoleOnlineStore.Logic
 
             return Convert.ToBase64String(hash);
         }
+        
     }
 }
