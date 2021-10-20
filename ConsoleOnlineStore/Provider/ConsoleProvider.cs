@@ -521,7 +521,7 @@ namespace ConsoleOnlineStore.Provider
                 DisplayMainWindow();
             }
             
-            Console.WriteLine("1. \nДобавить товар в корзину.\n" +
+            Console.WriteLine("\n1. Добавить товар в корзину.\n" +
                               "2. Найти другой товар\n" +
                               "3. Вернуться в главное меню.");
             while (true) 
