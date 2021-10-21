@@ -1,7 +1,6 @@
-﻿using System;
-using ConsoleOnlineStore.Logic;
-using ConsoleOnlineStore.Models;
+﻿using ConsoleOnlineStore.Models;
 using ConsoleOnlineStore.Services;
+using System;
 
 namespace ConsoleOnlineStore.Provider
 {
@@ -11,23 +10,23 @@ namespace ConsoleOnlineStore.Provider
         {
             Console.Title = "OnlineStore";
         }
-        
+
         public static void DisplayAuthWindow()
         {
             Console.WriteLine("1. Войти в свой аккаунт\n" +
                               "2. Пройти регистрацию.");
-            
+
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 switch (key.Key)
-                { 
+                {
                     case ConsoleKey.D1:
                         Console.Clear();
                         DisplayLoginWindow();
                         return;
-                        
+
                     case ConsoleKey.D2:
                         Console.Clear();
                         DisplayRegistrationWindow();
@@ -55,22 +54,22 @@ namespace ConsoleOnlineStore.Provider
                         Console.Clear();
                         DisplayCatalog();
                         return;
-                    
+
                     case ConsoleKey.D2:
                         Console.Clear();
                         DisplayBasket();
                         return;
-                        
+
                     case ConsoleKey.D3:
                         Console.Clear();
                         DisplayFindWindow();
                         return;
-                        
+
                     case ConsoleKey.D4:
                         Console.Clear();
                         DisplayPurchaseHistory();
                         return;
-                    
+
                     case ConsoleKey.D5:
                         Console.Clear();
 
@@ -78,7 +77,7 @@ namespace ConsoleOnlineStore.Provider
                         {
                             DisplayAuthWindow();
                         }
-                        
+
                         Basket.ResetBasket();
                         DisplayAuthWindow();
                         return;
@@ -90,7 +89,15 @@ namespace ConsoleOnlineStore.Provider
         {
             Catalog catalog = new Catalog();
 
-            catalog.PrintCatalog();
+            for (int i = (Catalog.Page - 1) * Catalog.Pagination;
+                i < Catalog.Page * Catalog.Pagination && i < catalog.Products.Count; i++)
+            {
+                Console.WriteLine($"Номер товара: {i + 1}");
+                Console.WriteLine($"Название: {catalog.Products[i].Name}");
+                Console.WriteLine($"Описание: {catalog.Products[i].Description}");
+                Console.WriteLine($"Количество: {catalog.Products[i].Quantity}");
+                Console.WriteLine($"Цена за штуку: {catalog.Products[i].Price}\n");
+            }
 
             Console.WriteLine("1. Добавить предмет в корзину.\n" +
                               "2. Следующая страница\n" +
@@ -111,37 +118,37 @@ namespace ConsoleOnlineStore.Provider
                         Console.Clear();
                         DisplayAddToBasket();
                         return;
-                    
+
                     case ConsoleKey.D2:
                         Console.Clear();
-                        
+
                         Catalog.Page++;
-                        
+
                         if (Catalog.Page * Catalog.Pagination - (Catalog.Pagination - 1) > catalog.Products.Count)
                         {
                             Console.WriteLine("Невозможно отобразить следующую страницу!\n");
                             Catalog.Page--;
                             DisplayCatalog();
                         }
-                        
+
                         DisplayCatalog();
                         return;
 
                     case ConsoleKey.D3:
                         Console.Clear();
-                        
+
                         Catalog.Page--;
-                        
+
                         if (Catalog.Page < 1)
                         {
                             Console.WriteLine("Невозможно отобразить предыидущую страницу!\n");
                             Catalog.Page++;
                             DisplayCatalog();
                         }
-                        
+
                         DisplayCatalog();
                         return;
-                        
+
                     case ConsoleKey.D4:
                         Console.Clear();
 
@@ -176,41 +183,25 @@ namespace ConsoleOnlineStore.Provider
         private static void DisplayAddToBasket()
         {
             Console.Write("Укажите номер товара: ");
-            string num = Console.ReadLine();
+            string index = Console.ReadLine();
+
             Console.Write("Укажите количество товара: ");
             string quantity = Console.ReadLine();
 
-            Catalog catalog = new Catalog();
-            Basket basket = new Basket();
-            
-            if (num == "" || quantity == "" || num is null || quantity is null)
+            Basket basket = new();
+
+            if (index is null or "" || quantity is null or "")
             {
                 Console.Clear();
-                Console.WriteLine("Вы не указали номер товара или его количество, попробуйте ещё раз");
+                Console.WriteLine("Вы не указали номер товара и количество товара, попробуйте ещё раз!");
                 DisplayAddToBasket();
             }
-            else if(!basket.AddToBasket(num, quantity))
-            {
-                Console.Clear();
-                Console.WriteLine("Вы указали неверный номер товара или его количество, просмотрите каталог ещё раз!\n");
-                DisplayCatalog();
-            }
-            else
-            {
-                Console.Clear();
-                Console.WriteLine($"Вы хотете добавить товар под номером: {num}");
-                Console.WriteLine($"Название: {catalog.Products[int.Parse(num) - 1].Name}"); 
-                Console.WriteLine($"Описание: {catalog.Products[int.Parse(num) - 1].Description}"); 
-                Console.WriteLine($"Количество: {int.Parse(quantity)}");
-                Console.WriteLine($"Цена за штуку: {catalog.Products[int.Parse(num) - 1].Price}");
-                Console.WriteLine();
-            }
 
-            Console.WriteLine("1. Добавить товар в корзину.\n" +
+            Console.WriteLine("\n1. Добавить товар в корзину.\n" +
                               "2. Указать другой номер товара.\n" +
                               "3. Вернуться в каталог.");
-            while (true) 
-            { 
+            while (true)
+            {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 switch (key.Key)
@@ -218,51 +209,58 @@ namespace ConsoleOnlineStore.Provider
                     case ConsoleKey.D1:
                         Console.Clear();
 
-                        if (Basket.ProductsInBasket.Count == 0)
+                        if (basket.AddProduct(index, quantity))
                         {
-                            basket.SetTimer();
+                            Console.WriteLine("Вы успешно добавили товар в корзину!\n");
                         }
-                        
-                        Basket.ProductsInBasket.Add(catalog.Products[int.Parse(num ?? string.Empty) - 1]);
-                        Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+                        else
+                        {
+                            Console.WriteLine("Не удалось добавить товар в корзину, просмотрите каталог ещё раз и укажите нужное значение!");
+                            DisplayCatalog();
+                        }
 
-                        Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
-                    
                         DisplayCatalog();
                         break;
-                    
+
                     case ConsoleKey.D2:
-                        Console.Clear(); 
+                        Console.Clear();
                         DisplayAddToBasket();
                         return;
-                        
+
                     case ConsoleKey.D3:
-                        Console.Clear(); 
-                        DisplayCatalog(); 
+                        Console.Clear();
+                        DisplayCatalog();
                         return;
                 }
             }
         }
-        
+
         private static void DisplayBasket()
         {
-            Basket basket = new Basket();
-            
+            Basket basket = new();
+
             Console.WriteLine($"К оплате за все товары: {basket.ProductPrice()}\n");
-            
+
             if (Basket.ProductsInBasket.Count == 0)
             {
                 Console.WriteLine("Ваша корзина пуста!\n");
             }
             else
             {
-                basket.PrintBasket();
+                for (int i = 0; i < Basket.ProductsInBasket.Count; i++)
+                {
+                    Console.WriteLine($"Товар номер: {i + 1}");
+                    Console.WriteLine($"Название: {Basket.ProductsInBasket[i].Name}");
+                    Console.WriteLine($"Описание: {Basket.ProductsInBasket[i].Description}");
+                    Console.WriteLine($"Количество: {Basket.ProductsInBasket[i].Quantity}");
+                    Console.WriteLine($"Цена за весь товар: {Basket.ProductsInBasket[i].Price}\n");
+                }
             }
 
             Console.WriteLine("1. Произвести покупку\n" +
                               "2. Очистить корзину\n" +
                               "3. Покинуть корзину");
-            
+
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -284,35 +282,33 @@ namespace ConsoleOnlineStore.Provider
                             {
                                 case ConsoleKey.D1:
                                     Console.Clear();
-                                    
+
                                     if (Basket.ProductsInBasket.Count == 0)
                                     {
                                         Console.WriteLine("Ваша корзина пуста, вы не можете провести оплату!\n");
-                                        
+
                                         DisplayBasket();
                                     }
-                                    
-                                    PurchaseHistory purchaseHistory = new();
 
                                     JsonStorage.ChangeProductsQuantity(basket.SoldQuantity());
 
                                     JsonStorage.AddNewPurchaseHistory(
-                                        purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
-                                    
+                                        PurchaseHistory.CreatePurchaseHistory(Basket.ProductsInBasket));
+
                                     Basket.ResetBasket();
-                                    
+
                                     Console.WriteLine("Поздравлем с успешной покупкой!\n");
 
                                     DisplayMainWindow();
                                     return;
-                                
+
                                 case ConsoleKey.D2:
                                     Console.Clear();
                                     DisplayBasket();
                                     return;
                             }
                         }
-                        
+
                     case ConsoleKey.D2:
                         Console.Clear();
 
@@ -321,12 +317,12 @@ namespace ConsoleOnlineStore.Provider
                             Console.WriteLine("Ваша корзина и так пуста!\n");
                             DisplayBasket();
                         }
-                    
+
                         Basket.ResetBasket();
-                    
+
                         DisplayBasket();
                         return;
-                        
+
                     case ConsoleKey.D3:
                         Console.Clear();
                         DisplayMainWindow();
@@ -338,7 +334,7 @@ namespace ConsoleOnlineStore.Provider
         private static void DisplayPurchaseHistory()
         {
             Console.WriteLine("1. Покинуть историю покупок\n");
-            
+
             PurchaseHistory purchaseHistory = new PurchaseHistory();
 
             if (purchaseHistory.ProductHistories is null)
@@ -347,9 +343,23 @@ namespace ConsoleOnlineStore.Provider
                 Console.WriteLine("Ваша история покупок пока что пуста, купите что-то и заходите!\n");
                 DisplayMainWindow();
             }
-            
-            purchaseHistory.PrintPurchaseHistory();
-            
+            else
+            {
+                for (int i = purchaseHistory.ProductHistories.Count - 1; i >= 0; i--)
+                {
+                    if (purchaseHistory.ProductHistories[i].Login == PurchaseHistory.Login)
+                    {
+                        Console.WriteLine($"Название: {purchaseHistory.ProductHistories[i].Name}");
+                        Console.WriteLine($"Описание: {purchaseHistory.ProductHistories[i].Description}");
+                        Console.WriteLine($"Количество: {purchaseHistory.ProductHistories[i].Quantity}");
+                        Console.WriteLine($"Цена покупки: {purchaseHistory.ProductHistories[i].Price}");
+                        Console.WriteLine($"Дата покупки: {purchaseHistory.ProductHistories[i].Date.ToShortDateString()}\n");
+                    }
+                }
+            }
+
+
+
             Console.WriteLine("1. Покинуть историю покупок");
 
             Console.SetCursorPosition(0, 0);
@@ -370,34 +380,34 @@ namespace ConsoleOnlineStore.Provider
 
         private static void DisplayRegistrationWindow()
         {
-            AuthService authService = new AuthService();
+            AuthService authService = new();
 
-            User user = new User();
+            User user = new();
 
             Console.WriteLine("Регистрация:");
-            
+
             Console.Write("Укажите ваш логин: ");
             user.Login = Console.ReadLine();
-            
-            if (user.Login?.Length < AuthService.MinLenght)
+
+            if (user.Login?.Length < AuthService.MinLength)
             {
                 Console.Clear();
-                Console.WriteLine($"Вы указали слишком короткий логин, минимальная длинна - {AuthService.MinLenght}, попробуйте ещё раз!\n");
+                Console.WriteLine($"Вы указали слишком короткий логин, минимальная длинна - {AuthService.MinLength}, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
 
             Console.Write("Укажите ваш пароль: ");
-            user.Password = authService.SecurePassword();
-            
-            if (user.Password?.Length < AuthService.MinLenght)
+            user.Password = GetSecurePassword();
+
+            if (user.Password?.Length < AuthService.MinLength)
             {
                 Console.Clear();
-                Console.WriteLine($"Вы указали слишком короткий пароль, минимальная длинна - {AuthService.MinLenght}, попробуйте ещё раз!\n");
+                Console.WriteLine($"Вы указали слишком короткий пароль, минимальная длинна - {AuthService.MinLength}, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
 
             Console.Write("Повторно введите пароль: ");
-            string repeatPassword = authService.SecurePassword();
+            string repeatPassword = GetSecurePassword();
 
             if (user.Password != repeatPassword)
             {
@@ -405,7 +415,7 @@ namespace ConsoleOnlineStore.Provider
                 Console.WriteLine("Вы неверно повторили пароль, попробуйте ещё раз!\n");
                 DisplayRegistrationWindow();
             }
-            
+
             Console.Write("Укажите ваше имя: ");
             user.Name = Console.ReadLine();
 
@@ -421,26 +431,26 @@ namespace ConsoleOnlineStore.Provider
                 {
                     case ConsoleKey.D1:
                         Console.Clear();
-                        
+
                         if (authService.AddNewUser(user))
                         {
                             Console.WriteLine("Данный логин уже занят, попробуйте другой!\n");
                             DisplayRegistrationWindow();
                         }
 
-                        user.Password = authService.GetHash(user.Password);
-                        
+                        user.Password = AuthService.GetHash(user.Password);
+
                         JsonStorage.AddNewUser(user);
-                        
+
                         Console.WriteLine("Регистрация прошла успешно! Теперь вы можете войти в свой аккаунт.\n");
                         DisplayAuthWindow();
                         return;
-                    
+
                     case ConsoleKey.D2:
                         Console.Clear();
                         DisplayRegistrationWindow();
                         return;
-                        
+
                     case ConsoleKey.D3:
                         Console.Clear();
                         DisplayAuthWindow();
@@ -451,15 +461,15 @@ namespace ConsoleOnlineStore.Provider
 
         private static void DisplayLoginWindow()
         {
-            AuthService authService = new AuthService();
-            
-            User user = new User();
+            AuthService authService = new();
+
+            User user = new();
 
             Console.Write("Введите логин: ");
             user.Login = Console.ReadLine();
-            
+
             Console.Write("Введите пароль: ");
-            user.Password = authService.SecurePassword();
+            user.Password = GetSecurePassword();
 
             Console.WriteLine("\n1. Подтвердить вход.\n" +
                               "2. Указать другой логин или пароль.\n" +
@@ -473,24 +483,24 @@ namespace ConsoleOnlineStore.Provider
                 {
                     case ConsoleKey.D1:
                         Console.Clear();
-                        
-                        user.Password = authService.GetHash(user.Password);
-                        
+
+                        user.Password = AuthService.GetHash(user.Password);
+
                         if (authService.Login(user))
                         {
                             Console.WriteLine($"Приветствуем {user.Name}!\n");
                             DisplayMainWindow();
                         }
-                        
-                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!");
+
+                        Console.WriteLine("Вы указали неверный логин или пароль, попробуйте ещё раз!\n");
                         DisplayLoginWindow();
                         return;
-                    
+
                     case ConsoleKey.D2:
                         Console.Clear();
                         DisplayLoginWindow();
                         return;
-                        
+
                     case ConsoleKey.D3:
                         Console.Clear();
                         DisplayAuthWindow();
@@ -504,7 +514,7 @@ namespace ConsoleOnlineStore.Provider
             Console.Write("Укажите название товара: ");
             string productName = Console.ReadLine();
 
-            Catalog catalog = new Catalog();
+            Catalog catalog = new();
 
             int productIndex = catalog.FindProduct(productName);
 
@@ -522,23 +532,16 @@ namespace ConsoleOnlineStore.Provider
                 DisplayMainWindow();
             }
 
-            Basket basket = new Basket();
-            
+            Basket basket = new();
+
             Console.Write("Укажите количество товара: ");
             string quantity = Console.ReadLine();
-            
-            if (!basket.AddToBasket((productIndex + 1).ToString(), quantity))
-            {
-                Console.Clear(); 
-                Console.WriteLine("Вы указали неверное количество товара! Попробуйте ещё раз!\n"); 
-                DisplayMainWindow();
-            }
-            
+
             Console.WriteLine("\n1. Добавить товар в корзину.\n" +
                               "2. Найти другой товар\n" +
                               "3. Вернуться в главное меню.");
-            while (true) 
-            { 
+            while (true)
+            {
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 switch (key.Key)
@@ -546,30 +549,57 @@ namespace ConsoleOnlineStore.Provider
                     case ConsoleKey.D1:
                         Console.Clear();
 
-                        if (Basket.ProductsInBasket.Count == 0)
+                        if (basket.AddProduct((productIndex + 1).ToString(), quantity))
                         {
-                            basket.SetTimer();
+                            Console.WriteLine("Вы успешно добавили товар в корзину!\n");
                         }
-                        
-                        Basket.ProductsInBasket.Add(catalog.Products[productIndex]); 
-                        Basket.ProductsInBasket[^1].Quantity = int.Parse(quantity ?? string.Empty);
+                        else
+                        {
+                            Console.WriteLine("Вы указали неверное количество товара!\n");
+                            DisplayFindWindow();
+                        }
 
-                        Console.WriteLine("Вы успешно добавили товар в корзину!\n"); 
-                    
                         DisplayMainWindow();
                         return;
-                    
+
                     case ConsoleKey.D2:
-                        Console.Clear(); 
+                        Console.Clear();
                         DisplayFindWindow();
                         return;
-                        
+
                     case ConsoleKey.D3:
-                        Console.Clear(); 
-                        DisplayMainWindow(); 
+                        Console.Clear();
+                        DisplayMainWindow();
                         return;
                 }
             }
+        }
+
+        private static string GetSecurePassword()
+        {
+            string securePassword = string.Empty;
+
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+
+                if (key.Key is ConsoleKey.Backspace or ConsoleKey.Spacebar or ConsoleKey.Delete)
+                {
+                    continue;
+                }
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
+
+                securePassword += key.KeyChar;
+                Console.Write("*");
+            }
+
+            Console.WriteLine();
+
+            return securePassword.Trim();
         }
     }
 }

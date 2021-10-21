@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ConsoleOnlineStore.Provider
+﻿namespace ConsoleOnlineStore.Provider
 {
     internal class Program
     {

@@ -1,24 +1,22 @@
-﻿using System;
+﻿using ConsoleOnlineStore.Models;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using ConsoleOnlineStore.Models;
-using ConsoleOnlineStore.Services;
-using System.Security;
 
-namespace ConsoleOnlineStore.Logic
+namespace ConsoleOnlineStore.Services
 {
     public class AuthService
     {
-        public const int MinLenght = 4;
-        
+        public const int MinLength = 4;
+
         private readonly List<User> _users;
 
         public AuthService()
         {
             _users = JsonStorage.GetUsers();
         }
-        
+
         public bool Login(User user)
         {
             if (_users is null)
@@ -45,7 +43,7 @@ namespace ConsoleOnlineStore.Logic
             {
                 return false;
             }
-            
+
             foreach (User item in _users)
             {
                 if (item.Login == user.Login)
@@ -57,41 +55,13 @@ namespace ConsoleOnlineStore.Logic
             return false;
         }
 
-        public string SecurePassword()
-        {
-            string securePwd = String.Empty;
-            ConsoleKeyInfo key;
-            
-            while(true) 
-            {
-                key = Console.ReadKey(true);
-
-                if (key.Key is ConsoleKey.Backspace or ConsoleKey.Spacebar or ConsoleKey.Delete)
-                {
-                    continue;
-                }
-
-                if (key.Key == ConsoleKey.Enter)
-                {
-                    break;
-                }
-                
-                securePwd += key.KeyChar;
-                Console.Write("*");
-            }
-
-            Console.WriteLine();
-
-            return securePwd.Trim();
-        }
-        
-        public string GetHash(string password)
+        public static string GetHash(string password)
         {
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(password));
 
             return Convert.ToBase64String(hash);
         }
-        
+
     }
 }

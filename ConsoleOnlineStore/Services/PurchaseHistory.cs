@@ -1,9 +1,8 @@
-﻿using System;
+﻿using ConsoleOnlineStore.Models;
+using System;
 using System.Collections.Generic;
-using ConsoleOnlineStore.Models;
-using ConsoleOnlineStore.Services;
 
-namespace ConsoleOnlineStore.Logic
+namespace ConsoleOnlineStore.Services
 {
     public class PurchaseHistory
     {
@@ -15,8 +14,8 @@ namespace ConsoleOnlineStore.Logic
         {
             ProductHistories = JsonStorage.GetPurchaseHistory();
         }
-        
-        public List<ProductHistory> MakePurchaseHistory(List<Product> productsInBasket)
+
+        public static List<ProductHistory> CreatePurchaseHistory(List<Product> productsInBasket)
         {
             List<ProductHistory> productHistories = new List<ProductHistory>();
 
@@ -36,21 +35,6 @@ namespace ConsoleOnlineStore.Logic
             }
 
             return productHistories;
-        }
-
-        public void PrintPurchaseHistory()
-        {
-            for (int i = ProductHistories.Count - 1; i >= 0; i--)
-            {
-                if (ProductHistories[i].Login == Login)
-                {
-                    Console.WriteLine($"Название: {ProductHistories[i].Name}");
-                    Console.WriteLine($"Описание: {ProductHistories[i].Description}");
-                    Console.WriteLine($"Количество: {ProductHistories[i].Quantity}");
-                    Console.WriteLine($"Цена покупки: {ProductHistories[i].Price}");
-                    Console.WriteLine($"Дата покупки: {ProductHistories[i].Date.ToShortDateString()}\n");
-                }
-            }
         }
     }
 }

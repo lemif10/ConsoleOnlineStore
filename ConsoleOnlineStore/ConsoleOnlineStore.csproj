@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -9,6 +9,12 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <OutputPath />
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="CC\**" />
+      <EmbeddedResource Remove="CC\**" />
+      <None Remove="CC\**" />
+    </ItemGroup>
 
     <ItemGroup>
       <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
@@ -32,37 +38,24 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="Content\Users.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      <None Remove="Content\appsettings.json" />
+      <None Remove="Content\Products.json" />
+      <None Remove="Content\PurchaseHistory.json" />
+      <None Remove="Content\Users.json" />
       <None Remove="Goods.json" />
       <None Remove="Login&amp;Password.json" />
-      <None Remove="PurchaseHistory.json" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Include="Content\appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
       <Content Include="Content\Products.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <None Remove="Users.json" />
       <Content Include="Content\PurchaseHistory.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
-      <None Remove="Products.json" />
-      <None Remove="appsettings.json" />
-      <None Remove="Content\appsettings.json" />
-      <Content Include="Content\appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Content\Products.json" />
-      <Content Include="Content\Products.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Content\PurchaseHistory.json" />
-      <Content Include="Content\PurchaseHistory.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <None Remove="Content\Users.json" />
       <Content Include="Content\Users.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

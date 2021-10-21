@@ -1,12 +1,11 @@
-﻿using System;
+﻿using ConsoleOnlineStore.Models;
+using ConsoleOnlineStore.Provider;
+using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Threading;
-using ConsoleOnlineStore.Models;
-using ConsoleOnlineStore.Provider;
-using ConsoleOnlineStore.Services;
-using Microsoft.Extensions.Configuration;
 
-namespace ConsoleOnlineStore.Logic
+namespace ConsoleOnlineStore.Services
 {
     public class Basket
     {
@@ -17,7 +16,7 @@ namespace ConsoleOnlineStore.Logic
         private readonly List<Product> _products;
 
         private readonly IConfiguration _configuration;
-        
+
         public static readonly List<Product> ProductsInBasket = new();
 
         public Basket()
@@ -35,7 +34,7 @@ namespace ConsoleOnlineStore.Logic
             _seconds = int.Parse(_configuration["Timer:TimeOutAfterSeconds"]);
         }
 
-        private void GetTime(object state)
+        private static void GetTime(object state)
         {
             if (_seconds == 0)
             {
@@ -44,7 +43,7 @@ namespace ConsoleOnlineStore.Logic
                 ResetBasket();
                 return;
             }
-            
+
             Console.Title = $"{state}{_seconds / 60:D2}:{_seconds % 60:D2}";
 
             _seconds--;
@@ -56,35 +55,40 @@ namespace ConsoleOnlineStore.Logic
             _timer.Dispose();
             ConsoleProvider.SetTitleName();
         }
-        
-        public bool AddToBasket(string index, string quantity)
+
+        public bool AddProduct(string index, string quantity)
         {
             if (int.TryParse(index, out int ind) && int.TryParse(quantity, out int quan))
             {
-                if (ind <= 0 || ind > _products.Count  || quan <= 0 ||
+                if (ind <= 0 || ind > _products.Count || quan <= 0 ||
                     quan > _products[ind - 1].Quantity)
                 {
                     return false;
                 }
-                
+
+                if (ProductsInBasket.Count == 0)
+                {
+                    SetTimer();
+                }
+
+                foreach (Product productInBasket in ProductsInBasket)
+                {
+                    if (productInBasket.Name == _products[ind - 1].Name)
+                    {
+                        productInBasket.Quantity += quan;
+                        return true;
+                    }
+                }
+
+                ProductsInBasket.Add(_products[ind - 1]);
+                ProductsInBasket[^1].Quantity = quan;
+
                 return true;
             }
 
             return false;
         }
 
-        public void PrintBasket()
-        {
-            for (int i = 0; i < ProductsInBasket.Count; i++)
-            {
-                Console.WriteLine($"Товар номер: {i + 1}");
-                Console.WriteLine($"Название: {ProductsInBasket[i].Name}");
-                Console.WriteLine($"Описание: {ProductsInBasket[i].Description}");
-                Console.WriteLine($"Количество: {ProductsInBasket[i].Quantity}");
-                Console.WriteLine($"Цена за весь товар: {ProductsInBasket[i].Price}\n");
-            }
-        }
-        
         public decimal ProductPrice()
         {
             decimal price = 0;
@@ -101,7 +105,7 @@ namespace ConsoleOnlineStore.Logic
                     }
                 }
             }
-            
+
             return price;
         }
 

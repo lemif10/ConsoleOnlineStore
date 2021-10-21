@@ -2,7 +2,7 @@
   {
     "Name": "Бабл Квас",
     "Description": "Экзотический квас с уникальным вкусом!",
-    "Quantity": 57,
+    "Quantity": 54,
     "Price": 3.20
   },
   {
@@ -20,7 +20,7 @@
   {
     "Name": "Данила",
     "Description": "Игрушка которая просто лежит!",
-    "Quantity": 66,
+    "Quantity": 58,
     "Price": 9.99
   },
   {
@@ -56,25 +56,25 @@
   {
     "Name": "Микрочеловек",
     "Description": "Маленький, агрессивный и боевой человечек",
-    "Quantity": 31,
+    "Quantity": 61,
     "Price": 45.32
   },
   {
     "Name": "Кит",
     "Description": "Кот, который любит много купаться",
-    "Quantity": 33,
+    "Quantity": 98,
     "Price": 14.82
   },
   {
     "Name": "Каланхоэ",
     "Description": "растение которое капают в нос и чихают",
-    "Quantity": 40,
+    "Quantity": 66,
     "Price": 23.5
   },
   {
     "Name": "Копибок",
     "Description": "Копилка для пробок от вина ",
-    "Quantity": 58,
-    "Price": 33.7
+    "Quantity": 102,
+    "Price": 13.7
   }
 ]
