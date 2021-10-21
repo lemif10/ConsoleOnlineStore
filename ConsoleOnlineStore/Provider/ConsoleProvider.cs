@@ -73,6 +73,13 @@ namespace ConsoleOnlineStore.Provider
                     
                     case ConsoleKey.D5:
                         Console.Clear();
+
+                        if (Basket.ProductsInBasket.Count == 0)
+                        {
+                            DisplayAuthWindow();
+                        }
+                        
+                        Basket.ResetBasket();
                         DisplayAuthWindow();
                         return;
                 }
@@ -292,7 +299,7 @@ namespace ConsoleOnlineStore.Provider
                                     JsonStorage.AddNewPurchaseHistory(
                                         purchaseHistory.MakePurchaseHistory(Basket.ProductsInBasket));
                                     
-                                    basket.ResetBasket();
+                                    Basket.ResetBasket();
                                     
                                     Console.WriteLine("Поздравлем с успешной покупкой!\n");
 
@@ -308,8 +315,14 @@ namespace ConsoleOnlineStore.Provider
                         
                     case ConsoleKey.D2:
                         Console.Clear();
+
+                        if (Basket.ProductsInBasket.Count == 0)
+                        {
+                            Console.WriteLine("Ваша корзина и так пуста!\n");
+                            DisplayBasket();
+                        }
                     
-                        basket.ResetBasket();
+                        Basket.ResetBasket();
                     
                         DisplayBasket();
                         return;

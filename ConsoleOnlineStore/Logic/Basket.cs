@@ -50,7 +50,7 @@ namespace ConsoleOnlineStore.Logic
             _seconds--;
         }
 
-        public void ResetBasket()
+        public static void ResetBasket()
         {
             ProductsInBasket.Clear();
             _timer.Dispose();
