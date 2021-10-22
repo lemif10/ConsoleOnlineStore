@@ -38,8 +38,8 @@ namespace ConsoleOnlineStore.Services
         {
             if (_seconds == 0)
             {
-                ConsoleProvider.SetTimeOutTitle();
                 ResetBasket();
+                ConsoleProvider.SetTimeOutTitle();
                 return;
             }
 
@@ -74,6 +74,11 @@ namespace ConsoleOnlineStore.Services
                 {
                     if (productInBasket.Name == _products[ind - 1].Name)
                     {
+                        if (productInBasket.Quantity + quan > _products[ind - 1].Quantity)
+                        {
+                            return false;
+                        }
+
                         productInBasket.Quantity += quan;
                         return true;
                     }

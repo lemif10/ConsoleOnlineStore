@@ -8,7 +8,7 @@ namespace ConsoleOnlineStore.Provider
     {
         public static void SetTimeOutTitle()
         {
-            Console.Title = "Время ожидания покупки вышло, ваша корзина пуста! - ConsoleOnlineStore";
+            Console.Title = "Время ожидания покупки вышло, ваша корзина пуста! - OnlineStore";
         }
         
         public static void SetTitleName()
@@ -18,7 +18,7 @@ namespace ConsoleOnlineStore.Provider
 
         public static void DisplayAuthWindow()
         {
-            Console.WriteLine("1. Войти в свой аккаунт\n" +
+            Console.WriteLine("1. Войти в свой аккаунт.\n" +
                               "2. Пройти регистрацию.");
 
             while (true)
@@ -47,7 +47,7 @@ namespace ConsoleOnlineStore.Provider
                     "2. Посмотреть корзину.\n" +
                     "3. Поиск товара по названию.\n" +
                     "4. Посмотреть историю покупок.\n" +
-                    "5. Выйти из аккаунта");
+                    "5. Выйти из аккаунта.");
 
             while (true)
             {
@@ -80,6 +80,7 @@ namespace ConsoleOnlineStore.Provider
 
                         if (Basket.ProductsInBasket.Count == 0)
                         {
+                            SetTitleName();
                             DisplayAuthWindow();
                         }
 
@@ -92,7 +93,7 @@ namespace ConsoleOnlineStore.Provider
 
         private static void DisplayCatalog()
         {
-            Catalog catalog = new Catalog();
+            Catalog catalog = new();
 
             for (int i = (Catalog.Page - 1) * Catalog.Pagination;
                 i < Catalog.Page * Catalog.Pagination && i < catalog.Products.Count; i++)
@@ -198,7 +199,7 @@ namespace ConsoleOnlineStore.Provider
             if (index is null or "" || quantity is null or "")
             {
                 Console.Clear();
-                Console.WriteLine("Вы не указали номер товара и количество товара, попробуйте ещё раз!");
+                Console.WriteLine("Вы не указали номер товара или количество товара, попробуйте ещё раз!\n");
                 DisplayAddToBasket();
             }
 
@@ -220,7 +221,7 @@ namespace ConsoleOnlineStore.Provider
                         }
                         else
                         {
-                            Console.WriteLine("Не удалось добавить товар в корзину, просмотрите каталог ещё раз и укажите нужное значение!");
+                            Console.WriteLine("Не удалось добавить товар в корзину, просмотрите каталог(или корзину) ещё раз и укажите нужные значения!\n");
                             DisplayCatalog();
                         }
 
@@ -340,7 +341,7 @@ namespace ConsoleOnlineStore.Provider
         {
             Console.WriteLine("1. Покинуть историю покупок\n");
 
-            PurchaseHistory purchaseHistory = new PurchaseHistory();
+            PurchaseHistory purchaseHistory = new();
 
             if (purchaseHistory.ProductHistories is null)
             {
@@ -350,6 +351,8 @@ namespace ConsoleOnlineStore.Provider
             }
             else
             {
+                bool correctLogin = false;
+
                 for (int i = purchaseHistory.ProductHistories.Count - 1; i >= 0; i--)
                 {
                     if (purchaseHistory.ProductHistories[i].Login == PurchaseHistory.Login)
@@ -359,11 +362,17 @@ namespace ConsoleOnlineStore.Provider
                         Console.WriteLine($"Количество: {purchaseHistory.ProductHistories[i].Quantity}");
                         Console.WriteLine($"Цена покупки: {purchaseHistory.ProductHistories[i].Price}");
                         Console.WriteLine($"Дата покупки: {purchaseHistory.ProductHistories[i].Date.ToShortDateString()}\n");
+                        correctLogin = true;
                     }
                 }
+
+                if (!correctLogin)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Ваша история покупок пока что пуста, купите что-то и заходите!\n");
+                    DisplayMainWindow();
+                }
             }
-
-
 
             Console.WriteLine("1. Покинуть историю покупок");
 
@@ -426,7 +435,7 @@ namespace ConsoleOnlineStore.Provider
 
             Console.WriteLine("\n1. Подтвердить регистрацию.\n" +
                               "2. Пройти регистрацию заново.\n" +
-                              "3. Покинуть окно регистрации");
+                              "3. Покинуть окно регистрации.");
 
             while (true)
             {
@@ -525,7 +534,7 @@ namespace ConsoleOnlineStore.Provider
             if (productName?.Length < Catalog.MinLength)
             {
                 Console.Clear();
-                Console.WriteLine($"Вы указали количество букв меньше {Catalog.MinLength}! Попробуйте ещё раз\n");
+                Console.WriteLine($"Вы указали количество букв меньше {Catalog.MinLength}, попробуйте ещё раз!\n");
                 DisplayFindWindow();
             }
             
@@ -551,7 +560,7 @@ namespace ConsoleOnlineStore.Provider
             string quantity = Console.ReadLine();
 
             Console.WriteLine("\n1. Добавить товар в корзину.\n" +
-                              "2. Найти другой товар\n" +
+                              "2. Найти другой товар.\n" +
                               "3. Вернуться в главное меню.");
             while (true)
             {

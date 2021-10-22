@@ -17,11 +17,11 @@ namespace ConsoleOnlineStore.Services
 
         public static List<ProductHistory> CreatePurchaseHistory(List<Product> productsInBasket)
         {
-            List<ProductHistory> productHistories = new List<ProductHistory>();
+            List<ProductHistory> productHistories = new();
 
             foreach (Product product in productsInBasket)
             {
-                ProductHistory productHistory = new ProductHistory
+                ProductHistory productHistory = new()
                 {
                     Login = Login,
                     Name = product.Name,
