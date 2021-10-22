@@ -5,6 +5,7 @@ namespace ConsoleOnlineStore.Services
 {
     public class Catalog
     {
+        public const int MinLength = 3;
         public const int Pagination = 3;
         public readonly List<Product> Products;
 

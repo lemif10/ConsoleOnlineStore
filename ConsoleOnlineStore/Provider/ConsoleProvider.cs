@@ -6,6 +6,11 @@ namespace ConsoleOnlineStore.Provider
 {
     public static class ConsoleProvider
     {
+        public static void SetTimeOutTitle()
+        {
+            Console.Title = "Время ожидания покупки вышло, ваша корзина пуста! - ConsoleOnlineStore";
+        }
+        
         public static void SetTitleName()
         {
             Console.Title = "OnlineStore";
@@ -511,11 +516,19 @@ namespace ConsoleOnlineStore.Provider
 
         private static void DisplayFindWindow()
         {
+            Console.WriteLine($"Товар можно найти по частичному вводу! Укажите минимум {Catalog.MinLength} буквы и попробуйте найти!\n");
             Console.Write("Укажите название товара: ");
             string productName = Console.ReadLine();
 
             Catalog catalog = new();
-
+            
+            if (productName?.Length < Catalog.MinLength)
+            {
+                Console.Clear();
+                Console.WriteLine($"Вы указали количество букв меньше {Catalog.MinLength}! Попробуйте ещё раз\n");
+                DisplayFindWindow();
+            }
+            
             int productIndex = catalog.FindProduct(productName);
 
             if (productIndex != -1)
@@ -528,7 +541,7 @@ namespace ConsoleOnlineStore.Provider
             else
             {
                 Console.Clear();
-                Console.WriteLine("Мы не смогли найти товар который вы искали, нужно полное совпадение названия товара!\n");
+                Console.WriteLine("Мы не смогли найти товар который вы искали!\n");
                 DisplayMainWindow();
             }
 

@@ -26,7 +26,7 @@ namespace ConsoleOnlineStore.Services
             _configuration = new ConfigurationBuilder().AddJsonFile("Content/appsettings.json").Build();
         }
 
-        public void SetTimer()
+        private void SetTimer()
         {
             _timer = new Timer(GetTime, _configuration["Timer:State"], TimeSpan.FromMinutes(double.Parse(_configuration["Timer:StartAfterMinutes"])),
                 TimeSpan.FromSeconds(double.Parse(_configuration["Timer:PeriodSeconds"])));
@@ -38,8 +38,7 @@ namespace ConsoleOnlineStore.Services
         {
             if (_seconds == 0)
             {
-                ConsoleProvider.SetTitleName();
-                Console.WriteLine("\nВремя ожидания покупки вышло, ваша корзина пуста!");
+                ConsoleProvider.SetTimeOutTitle();
                 ResetBasket();
                 return;
             }
