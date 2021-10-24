@@ -1,30 +1,31 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using ConsoleOnlineStore.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Services
 {
     public static class JsonStorage
     {
-        private static string PathUser {get;} = Path.Combine(Directory.GetCurrentDirectory(), "Content/Users.json");
-        
-        private static string PathProduct {get;} = Path.Combine(Directory.GetCurrentDirectory(), "Content/Products.json");
+        private static string PathUser { get; } = Path.Combine(Directory.GetCurrentDirectory(), "Content/Users.json");
 
-        private static string PathHistory {get;} = Path.Combine(Directory.GetCurrentDirectory(), "Content/PurchaseHistory.json");
-        
+        private static string PathProduct { get; } = Path.Combine(Directory.GetCurrentDirectory(), "Content/Products.json");
+
+        private static string PathHistory { get; } = Path.Combine(Directory.GetCurrentDirectory(), "Content/PurchaseHistory.json");
+
         public static void AddNewUser(User user)
         {
             if (!File.Exists(PathUser))
             {
                 File.Create(PathUser);
             }
-            
+
             List<User> users = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathUser))
                                ?? new List<User>();
-            
+
             users.Add(user);
 
-            using (StreamWriter streamWriter = new StreamWriter(PathUser))
+            using (StreamWriter streamWriter = new(PathUser))
             {
                 streamWriter.WriteLine(JsonConvert.SerializeObject(users, Formatting.Indented));
             }
@@ -36,20 +37,20 @@ namespace ConsoleOnlineStore
             {
                 File.Create(PathUser);
             }
-            
+
             return JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(PathUser));
         }
 
-        public static void NewProductsQuantity(List<Product> newQuantity)
+        public static void ChangeProductsQuantity(List<Product> newQuantity)
         {
             if (!File.Exists(PathProduct))
             {
                 File.Create(PathProduct);
             }
-            
+
             List<Product> products = JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct))
                                      ?? new List<Product>();
-            
+
             products.Clear();
 
             foreach (Product product in newQuantity)
@@ -57,19 +58,19 @@ namespace ConsoleOnlineStore
                 products.Add(product);
             }
 
-            using (StreamWriter streamWriter = new StreamWriter(PathProduct))
+            using (StreamWriter streamWriter = new(PathProduct))
             {
                 streamWriter.WriteLine(JsonConvert.SerializeObject(products, Formatting.Indented));
             }
         }
-        
+
         public static List<Product> GetProducts()
         {
             if (!File.Exists(PathProduct))
             {
                 File.Create(PathProduct);
             }
-            
+
             return JsonConvert.DeserializeObject<List<Product>>(File.ReadAllText(PathProduct));
         }
 
@@ -79,7 +80,7 @@ namespace ConsoleOnlineStore
             {
                 File.Create(PathHistory);
             }
-            
+
             List<ProductHistory> basketHistory = JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory))
                                                  ?? new List<ProductHistory>();
 
@@ -87,8 +88,8 @@ namespace ConsoleOnlineStore
             {
                 basketHistory.Add(productHistory);
             }
-            
-            using (StreamWriter streamWriter = new StreamWriter(PathHistory))
+
+            using (StreamWriter streamWriter = new(PathHistory))
             {
                 streamWriter.WriteLine(JsonConvert.SerializeObject(basketHistory, Formatting.Indented));
             }
@@ -100,7 +101,7 @@ namespace ConsoleOnlineStore
             {
                 File.Create(PathHistory);
             }
-            
+
             return JsonConvert.DeserializeObject<List<ProductHistory>>(File.ReadAllText(PathHistory));
         }
     }

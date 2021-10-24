@@ -1,19 +1,22 @@
-﻿using System;
+﻿using ConsoleOnlineStore.Models;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ConsoleOnlineStore
+namespace ConsoleOnlineStore.Services
 {
     public class AuthService
     {
+        public const int MinLength = 4;
+
         private readonly List<User> _users;
 
         public AuthService()
         {
             _users = JsonStorage.GetUsers();
         }
-        
+
         public bool Login(User user)
         {
             if (_users is null)
@@ -40,7 +43,7 @@ namespace ConsoleOnlineStore
             {
                 return false;
             }
-            
+
             foreach (User item in _users)
             {
                 if (item.Login == user.Login)
@@ -52,12 +55,13 @@ namespace ConsoleOnlineStore
             return false;
         }
 
-        public string GetHash(string password)
+        public static string GetHash(string password)
         {
             MD5 md5 = MD5.Create();
             byte[] hash = md5.ComputeHash(Encoding.ASCII.GetBytes(password));
 
             return Convert.ToBase64String(hash);
         }
+
     }
 }
